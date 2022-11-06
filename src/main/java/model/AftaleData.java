@@ -9,8 +9,8 @@ public class AftaleData {
     private String note;
     private String cprkey;
 
-    public Timestamp getDatetime() {
-        return datetime;
+    public String getDatetime() {
+        return datetime.toString();
     }
 
     public void setDatetime(Timestamp datetime) {

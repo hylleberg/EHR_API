@@ -18,7 +18,7 @@ function loadHTML(id,filename){
         }
         xhttp.open("GET", file, true);
         xhttp.send();
-        return;
+
     }
 
 

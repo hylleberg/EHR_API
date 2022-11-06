@@ -2,18 +2,18 @@ package datalayer;
 
 import java.sql.*;
 
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import model.AftaleData;
 import model.LoginData;
 import model.PatientData;
-import model.PayloadPatient;
 
 public class DAOcontroller {
 
 
     private LoginData logindata;
     private PatientData patientdata;
+
+    private AftaleData aftaledata;
     public Response fetchLoginDataDB(LoginData logindata){
 
         this.logindata = logindata;
@@ -75,31 +75,35 @@ public class DAOcontroller {
         return Response.status(Response.Status.BAD_REQUEST).entity("Forkert CPR").build();
     }
 
-    public void fetchAftaleDataDB(){
+    public Response fetchAftaleDataDB(PatientData patientdata){
+        this.patientdata = patientdata;
+
+        AftaleData aftaledata = new AftaleData();
 
         try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc-test", "root", "T3stT3st123!");
-            PreparedStatement preparedStatement = con.prepareStatement("select * from patient where cpr = ?");
+            PreparedStatement preparedStatement = con.prepareStatement("select * from aftaler where cpr = ?");
             preparedStatement.setString(1,patientdata.getCpr());
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if(resultSet.next()){
-                patientdata.setFornavn(resultSet.getString("fornavn"));
-                patientdata.setEfternavn(resultSet.getString("efternavn"));
-                patientdata.setAdresse(resultSet.getString("adresse"));
-
-                //JSON til frontend
-            }else{
-
-                System.out.println("Intet CPR nr fundet.");
-
-                //Error til API
+                aftaledata.setDatetime(resultSet.getTimestamp("startdato"));
+                aftaledata.setDuration(resultSet.getInt("varighed"));
+                aftaledata.setNote(resultSet.getString("notat"));
+                System.out.println("Aftale fundet");
+                return Response.status(Response.Status.CREATED).entity(aftaledata).build();
             }
+
+
 
         }catch(Exception e){
             e.printStackTrace();
         }
+        System.out.println("Intet CPR nr fundet.");
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
 }
