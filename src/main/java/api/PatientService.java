@@ -12,7 +12,7 @@ import model.PatientData;
 
 
 @Path("cpr")
-public class FindPatientService {
+public class PatientService {
     private static DAOcontroller dc = new DAOcontroller();
 
     @POST

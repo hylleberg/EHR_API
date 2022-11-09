@@ -1,15 +1,10 @@
-console.log("login");
 
-
-
-async function clickCPR() {
+async function fetchCPR() {
 
     let cprform = document.getElementById("cprform");
     const formData = new FormData(cprform);
     const object = Object.fromEntries(formData);
     console.log(object);
-    //Bruger fetch-API til at sende data - POST. JSON.stringify for at serialisere objekt til string.
-
 
     const res = await fetch("api/cpr", {
         method: "POST",
@@ -21,37 +16,33 @@ async function clickCPR() {
 
     })
 
-
-
     const json = await res.text();
-
 
     if(res.status === 201){
         const obj = JSON.parse(json);
-
-
         console.log(obj.fornavn)
         console.log(obj.efternavn)
         console.log(obj.adresse)
         document.getElementById("errorcode").innerHTML = ""
         document.getElementById("navnfelt").innerHTML = obj.fornavn + " " + obj.efternavn;
         document.getElementById("cprfelt").innerHTML = obj.cpr;
+        document.getElementById("adressefelt").innerHTML = obj.adresse;
 
-        var button = document.createElement("button");
-        button.innerHTML = "Vælg patient";
-        button.setAttribute('type', 'button')
-        var divButton = document.getElementById("chooseButton")
+ //       var button = document.createElement("button");
+ //       button.innerHTML = "Vælg patient";
+ //       button.setAttribute('type', 'button')
+ //       var divButton = document.getElementById("chooseButton")
 
-        divButton.appendChild(button);
+ //       divButton.appendChild(button);
 
 
-        button.onclick =   function() {
-            loadHTML("sitecontent", "patienthome.html");
-            document.getElementById("navnfelt2").innerHTML = obj.fornavn + " " + obj.efternavn;
-            document.getElementById("cprfelt2").innerHTML = obj.cpr;
-            document.getElementById("adressefelt2").innerHTML = obj.adresse;
-        return false;
-        };
+  //      button.onclick =   function() {
+ //           loadHTML("sitecontent", "patienthome.html");
+  //          document.getElementById("navnfelt2").innerHTML = obj.fornavn + " " + obj.efternavn;
+  //          document.getElementById("cprfelt2").innerHTML = obj.cpr;
+ //           document.getElementById("adressefelt2").innerHTML = obj.adresse;
+  //      return false;
+  //      };
 
 
 

@@ -9,7 +9,7 @@ import model.PatientData;
 
 public class DAOcontroller {
 
-
+    private SqlConnector sqlcon = new SqlConnector();
     private LoginData logindata;
     private PatientData patientdata;
 
@@ -20,8 +20,7 @@ public class DAOcontroller {
 
         try{
             //Forbidenlse til database
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc-test", "root", "T3stT3st123!");
+            Connection con = sqlcon.getConnection();
             //Forbered query statement
             PreparedStatement preparedStatement = con.prepareStatement("select * from logindata where brugernavn = ? and password = ?");
             preparedStatement.setString(1,logindata.getUsername());
@@ -48,8 +47,7 @@ public class DAOcontroller {
         this.patientdata = patientdata;
 
         try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc-test", "root", "T3stT3st123!");
+            Connection con = sqlcon.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement("select * from patient where cpr = ?");
             preparedStatement.setString(1,patientdata.getCpr());
 
@@ -81,8 +79,7 @@ public class DAOcontroller {
         AftaleData aftaledata = new AftaleData();
 
         try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc-test", "root", "T3stT3st123!");
+            Connection con = sqlcon.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement("select * from aftaler where cpr = ?");
             preparedStatement.setString(1,patientdata.getCpr());
 
@@ -95,8 +92,6 @@ public class DAOcontroller {
                 System.out.println("Aftale fundet");
                 return Response.status(Response.Status.CREATED).entity(aftaledata).build();
             }
-
-
 
         }catch(Exception e){
             e.printStackTrace();

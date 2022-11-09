@@ -19,7 +19,9 @@ public class LoginService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response doLogin(LoginData logindata){
-             return dc.fetchLoginDataDB(logindata);
+
+
+        return dc.fetchLoginDataDB(logindata);
         }
 
 }

@@ -8,7 +8,6 @@ public class PatientData {
     private String efternavn;
     private String adresse;
 
-
     public String getCpr() {
         return cpr;
     }

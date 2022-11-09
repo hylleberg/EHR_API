@@ -3,11 +3,9 @@ function loadHTML(id,filename){
 
     console.log(id);
     console.log(filename);
-
     let xhttp;
     let element = document.getElementById(id);
     let file = filename;
-
     if(file){
         xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function(){
@@ -18,7 +16,6 @@ function loadHTML(id,filename){
         }
         xhttp.open("GET", file, true);
         xhttp.send();
-
     }
 
 
