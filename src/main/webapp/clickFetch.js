@@ -84,16 +84,40 @@ async function fetchAftale(){
     if(res.status === 201) {
         const obj = JSON.parse(json);
 
+        let myTable = document.querySelector('#aftaleTable');
+
+        let headers = ['Startdato', 'Varighed', 'Notat'];
+
+        let table = document.createElement('table');
+        let headerRow = document.createElement('tr');
+        headers.forEach(headerText => {
+            let header = document.createElement('th');
+            let textNode = document.createTextNode(headerText);
+            header.appendChild(textNode);
+            headerRow.appendChild(header);
+        });
+
+        table.appendChild(headerRow);
+
+        obj.forEach(objekt => {
+            let row = document.createElement('tr');
+            Object.values(objekt).forEach(text => {
+                let cell = document.createElement('td');
+                let textNode = document.createTextNode(text);
+                cell.appendChild(textNode);
+                row.appendChild(cell);
+            })
+            table.appendChild(row);
+        });
+        myTable.appendChild(table);
+
         console.log(obj.note)
         console.log(obj.datetime)
         console.log(obj.duration)
         document.getElementById("timestampfelt").innerHTML = "Oprettet: " + obj.datetime;
         document.getElementById("durationfelt").innerHTML = "Konsultations varighed: " + obj.duration;
         document.getElementById("notatfelt").innerHTML = obj.note;
-    }else if(res.status === 400) {
-
-    }else{
-
+    }else {
+        document.getElementById("errorfelt3").innerHTML = "Der skete en fejl, kunne ikke finde aftaler";
     }
-
 }

@@ -1,6 +1,8 @@
 package datalayer;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.ws.rs.core.Response;
 import model.AftaleData;
@@ -14,58 +16,57 @@ public class DAOcontroller {
     private PatientData patientdata;
 
     private AftaleData aftaledata;
-    public Response fetchLoginDataDB(LoginData logindata){
+
+    public boolean fetchLoginDataDB(LoginData logindata) {
 
         this.logindata = logindata;
 
-        try{
+        try {
             //Forbidenlse til database
             Connection con = sqlcon.getConnection();
             //Forbered query statement
             PreparedStatement preparedStatement = con.prepareStatement("select * from logindata where brugernavn = ? and password = ?");
-            preparedStatement.setString(1,logindata.getUsername());
+            preparedStatement.setString(1, logindata.getUsername());
             preparedStatement.setString(2, logindata.getPassword());
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
 
-                System.out.println("Kombination korrekt");
-                return Response.status(Response.Status.CREATED).entity("Kombinatioon korrekt!").build();
+                return true;
 
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        System.out.println("Brugernavn/password kombination forkert.");
-        return Response.status(Response.Status.BAD_REQUEST).entity("Forkert kombination").build();
+        return false;
 
     }
 
-    public Response fetchPatientDataDB(PatientData patientdata){
+    public Response fetchPatientDataDB(PatientData patientdata) {
 
         this.patientdata = patientdata;
 
-        try{
+        try {
             Connection con = sqlcon.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement("select * from patient where cpr = ?");
-            preparedStatement.setString(1,patientdata.getCpr());
+            preparedStatement.setString(1, patientdata.getCpr());
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 patientdata.setFornavn(resultSet.getString("fornavn"));
                 patientdata.setEfternavn(resultSet.getString("efternavn"));
                 patientdata.setAdresse(resultSet.getString("adresse"));
 
                 System.out.println("Patient data hentet");
                 return Response.status(Response.Status.CREATED).entity(patientdata).build();
-            }else{
+            } else {
 
 
             }
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("Intet CPR nr fundet.");
@@ -73,27 +74,36 @@ public class DAOcontroller {
         return Response.status(Response.Status.BAD_REQUEST).entity("Forkert CPR").build();
     }
 
-    public Response fetchAftaleDataDB(PatientData patientdata){
+    public Response fetchAftaleDataDB(PatientData patientdata) {
         this.patientdata = patientdata;
 
-        AftaleData aftaledata = new AftaleData();
 
-        try{
+        List<AftaleData> aftaler = new ArrayList<AftaleData>();
+
+        try {
             Connection con = sqlcon.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement("select * from aftaler where cpr = ?");
-            preparedStatement.setString(1,patientdata.getCpr());
+            preparedStatement.setString(1, patientdata.getCpr());
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if(resultSet.next()){
-                aftaledata.setDatetime(resultSet.getTimestamp("startdato"));
-                aftaledata.setDuration(resultSet.getInt("varighed"));
-                aftaledata.setNote(resultSet.getString("notat"));
-                System.out.println("Aftale fundet");
-                return Response.status(Response.Status.CREATED).entity(aftaledata).build();
-            }
+                while(resultSet.next()){
+                    AftaleData aftaledata = new AftaleData();
 
-        }catch(Exception e){
+                    aftaledata.setDatetime(resultSet.getTimestamp("startdato"));
+                    aftaledata.setDuration(resultSet.getInt("varighed"));
+                    aftaledata.setNote(resultSet.getString("notat"));
+
+                    aftaler.add(aftaledata);
+
+                    System.out.println("Aftale tilføjet til objekt");
+
+                }
+
+                return Response.status(Response.Status.CREATED).entity(aftaler).build();
+
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("Intet CPR nr fundet.");
