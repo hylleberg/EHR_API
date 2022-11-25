@@ -86,7 +86,7 @@ async function fetchAftale(){
 
         let myTable = document.querySelector('#aftaleTable');
 
-        let headers = ['Startdato', 'Varighed', 'Notat'];
+        let headers = ['Startdato', 'Varighed', 'Notat', 'Gå til'];
 
         let table = document.createElement('table');
         let headerRow = document.createElement('tr');
@@ -106,17 +106,20 @@ async function fetchAftale(){
                 let textNode = document.createTextNode(text);
                 cell.appendChild(textNode);
                 row.appendChild(cell);
+
             })
+            let btn = document.createElement('button');
+            btn.innerHTML = "Vælg aftale";
+            btn.onclick = function () {
+
+
+            };
+            row.appendChild(btn);
             table.appendChild(row);
+
         });
         myTable.appendChild(table);
 
-        console.log(obj.note)
-        console.log(obj.datetime)
-        console.log(obj.duration)
-        document.getElementById("timestampfelt").innerHTML = "Oprettet: " + obj.datetime;
-        document.getElementById("durationfelt").innerHTML = "Konsultations varighed: " + obj.duration;
-        document.getElementById("notatfelt").innerHTML = obj.note;
     }else {
         document.getElementById("errorfelt3").innerHTML = "Der skete en fejl, kunne ikke finde aftaler";
     }

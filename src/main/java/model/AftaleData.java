@@ -7,7 +7,6 @@ public class AftaleData {
     private Timestamp datetime;
     private int duration;
     private String note;
-    private String cprkey;
 
     public String getDatetime() {
         return datetime.toString();
@@ -33,13 +32,6 @@ public class AftaleData {
         this.note = note;
     }
 
-    public String getCprkey() {
-        return cprkey;
-    }
-
-    public void setCprkey(String cprkey) {
-        this.cprkey = cprkey;
-    }
 
 
 
