@@ -8,19 +8,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@500;700&display=swap" rel="stylesheet">
-    <script src="clickFetch.js"></script>
-    <script src="./dynamichtml.js"></script>
+
 </head>
-<body>
+<body onload='loadHTML("sitecontent", "welcome.html")'>
 
     <header>
         <p><a href="#" class="logo">DTU-EHR system</a> <img src="./ekglogo.png" width="" class="ekglogo">
         </p>
 
         <ul>
-            <li><a href="#" class="active" onclick='loadHTML("sitecontent", "findpatient.html")'>Find patient</a></li>
-            <li><a href="#" onclick='loadHTML("sitecontent", "patienthome.html")'>Patientoverblik</a></li>
-            <li><a href="#" onclick='loadHTML("sitecontent", "aftaler.html")'>Aftaler</a></li>
+            <li><a href="#" onclick='loadHTML("sitecontent", "welcome.html")'>Hjem</a></li>
+            <li><a href="#" onclick='loadHTML("sitecontent", "findpatient.html")'>Find patient</a></li>
+            <li><a href="#" onclick='loadHTML("sitecontent", "journal.html")'>Journal</a></li>
+            <li><a href="#" onclick='loadHTML("sitecontent", "aftaler.html")'>Konsultationer</a></li>
             <li><a href="#popup1" >Log-ud</a></li>
 
         </ul>
@@ -31,7 +31,7 @@
                 <a class="close" href="#">&times;</a>
                 <div class="content1">
                     Er du sikker på du vil logge ud?<br><br>
-                   <p><form action="./index.html"><button class="button" type="Submit">Ja tak</button></form></p>
+                   <p><form action="./index.html" onclick="clearSession()"><button class="button" type="Submit">Ja tak</button></form></p>
 
                     <button class="button" type="Submit">Annuller</button>
                 </div>
@@ -40,25 +40,15 @@
     </header>
     <div class="main-content">
         <div class="sidebar">
-            <h1>Find patient:</h1>
-
-            <div></div>
-            <form class="form" id="cprform">
-            <input type="text" class="input" name ="cpr" autofocus placeholder="Indtast CPR nr:"><br>
-            </form>
-
-            <button class="button" type="Submit" onclick="fetchCPR()" id="cprbutton">Søg CPR</button><br><br>
-            <div class="error-message" id="errorcode"></div>
-            <div class="" id="navnfelt"></div>
-            <div class="" id="cprfelt"></div>
-            <div id="adressefelt"></div>
-
-            <div id="chooseButton"></div>
+            <h1 id="navnfelt_sidebar"></h1>
+            <h2 id="cprfelt_sidebar"></h2>
+            <div id="addfelt_sidebar"></div>
 
         </div>
 
 
         <div class="sitecontent" id="sitecontent">
+
 
 
         </div>
@@ -68,4 +58,6 @@
 
 
 </body>
+<script src="clickFetch.js"></script>
+<script src="./dynamichtml.js"></script>
 </html>

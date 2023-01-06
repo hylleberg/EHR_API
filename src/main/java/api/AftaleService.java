@@ -1,10 +1,7 @@
 package api;
 
 import datalayer.DAOcontroller;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import model.AftaleData;
@@ -16,12 +13,16 @@ public class AftaleService {
 
     private static DAOcontroller dc = new DAOcontroller();
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("{cpr}")
+    public Response findAftaleData(@PathParam("cpr") String cpr){
 
-    public Response findAftaleData(PatientData patientdata){
-        System.out.println("aftale service aktiviteret");
+        System.out.println("Aftale service aktiviteret");
+
+        PatientData patientdata = new PatientData();
+        patientdata.setCpr(cpr);
+
         return dc.fetchAftaleDataDB(patientdata);
     }
 }

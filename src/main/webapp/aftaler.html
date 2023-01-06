@@ -11,21 +11,29 @@
 <body>
 
     <div class="" id="aftaleMain">
-    <h1>Aftaler</h1><br>
-
-        <button class="button" type="Submit" id="fetchAftale" onclick="fetchAftale()" id="aftalebutton">Hent aftaler...</button>
+    <h1>Konsultationer</h1>
+        <hr><br>
+        <button class="button" type="Submit" id="fetchAftale" onclick="fetchAftale()" id="hentAftalerButton">Se tidligere konsultationer</button>
+        <button class="button" type="Submit" id="createAftale" onclick="" id="createAftaleButton">Opret ny konsultation</button>
     </div>
-    <div id="aftaleTable"></div>
+    <br>
+    <hr>
     <div class="error-message" id="errorfelt3"></div>
-    <div id="timestampfelt"></div>
-    <div id="durationfelt"></div>
-    <div id="notatfelt"></div>
-    <div class="hidden" id="aftaleSelect">
-     <h3>Du har valgt en aftale!</h3> <br>
-      <button class="button" type="Submit">Gem aftale</button><br><br>
-      <a href="#" id="linkGoBack">Gå tilbage...</a>
 
-  </div>
+
+    <div class="aftaleListContainer" id="aftaleListContainer"><div id="aftaleTable"></div></div>
+
+
+    <div class="hidden" id="visAftale"> <h2>Her vises aftale</h2>
+        <button class="button" type="Submit" onclick="changeVisibility('aftaleListContainer', 'visAftale')" id="goBack">Gå tilbage</button>
+    </div>
+
+    <div class="hidden" id="opretAftale">
+
+
+
+    </div>
+
 
 
 </body>

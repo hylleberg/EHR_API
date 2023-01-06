@@ -1,25 +1,27 @@
 package api;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import datalayer.DAOcontroller;
 import model.PatientData;
 
 
+// GET patientdata from search query "CPR"
 
-@Path("cpr")
+@Path("{cpr}")
 public class PatientService {
     private static DAOcontroller dc = new DAOcontroller();
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
 
-    public Response findPatientData(PatientData patientdata){
+    public Response findPatientData(@PathParam("cpr") String cpr){
+
+        System.out.println("Patientservice aktiveret");
+
+        PatientData patientdata = new PatientData();
+        patientdata.setCpr(cpr);
         return dc.fetchPatientDataDB(patientdata);
     }
 
