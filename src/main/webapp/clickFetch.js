@@ -20,9 +20,14 @@ async function fetchCPR() {
     const object = Object.fromEntries(formData);
     console.log(object);
 
+    let bearer = "Bearer " + localStorage.getItem("token")
+    console.log(localStorage.getItem("token"));
 
     const res = await fetch("api/" + object.cpr, {
         method: "GET",
+        headers: {
+            'Authorization' : bearer,
+        },
     })
 
     const json = await res.text();
@@ -74,7 +79,13 @@ async function fetchCPR() {
         document.getElementById("navnfelt").innerHTML = "";
         document.getElementById("adressefelt").innerHTML = "";
 
-     }else{
+     }else if(res.status === 401){
+        document.getElementById("errorcode").innerHTML = "Adgang nægtet."
+        document.getElementById("cprfelt").innerHTML = "";
+        document.getElementById("navnfelt").innerHTML = "";
+        document.getElementById("adressefelt").innerHTML = "";
+
+    }else{
         document.getElementById("errorcode").innerHTML = "Server fejl..."
         document.getElementById("cprfelt").innerHTML = "";
         document.getElementById("navnfelt").innerHTML = "";
@@ -95,11 +106,11 @@ function changeVisibility(showDiv, hideDiv){
 async function fetchAftale(){
     let cpr3 = JSON.stringify({cpr: sessionStorage.getItem("cpr")});
 
-    console.log(cpr3)
+    let bearer = "Bearer " + localStorage.getItem("token")
     const res = await fetch("api/aftale/"+ sessionStorage.getItem("cpr"), {
         method: "GET",
         headers: {
-            "content-type": "application/json"
+            'Authorization' : bearer,
         }
     })
     console.log(res)
@@ -148,7 +159,10 @@ async function fetchAftale(){
         });
         myTable.appendChild(table);
 
-    }else {
+    }else if(res.status === 401){
+        document.getElementById("errorfelt3").innerHTML = "Adgang nægtet."
+
+    }else{
         document.getElementById("errorfelt3").innerHTML = "Der skete en fejl, kunne ikke finde aftaler";
     }
 }

@@ -1,6 +1,7 @@
 package api;
 
 import datalayer.DAOcontroller;
+import filters.Secured;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -13,6 +14,7 @@ public class AftaleService {
 
     private static DAOcontroller dc = new DAOcontroller();
 
+    @Secured
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{cpr}")

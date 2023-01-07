@@ -10,7 +10,7 @@ public class SqlConnector {
 
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://mysql-db.caprover.diplomportal.dk/" + "s215848?user=s215848&password=wi4eMewJpOEOTxullpogV");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc-test", "root", "T3stT3st123!");
        return con;
         }catch(Exception e){
             e.printStackTrace();

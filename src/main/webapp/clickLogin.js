@@ -15,9 +15,10 @@ async function clickLogin() {
 
     const json = await res.text();
 
-   // const obj = JSON.parse(json);
     if (res.status === 201) {
-        window.location.href = "home.html"
+        localStorage.setItem("token", json);
+
+        window.location.href = "home.html";
 
     } else if (res.status === 500) {
         document.getElementById("error").innerHTML = "Server fejl, prøv igen."

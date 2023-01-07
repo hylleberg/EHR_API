@@ -17,6 +17,43 @@ public class DAOcontroller {
 
     private AftaleData aftaledata;
 
+    public String getKeyDB(String username){
+        try {
+            //Forbidenlse til database
+            Connection con = sqlcon.getConnection();
+            //Forbered query statement
+            PreparedStatement preparedStatement = con.prepareStatement("select * from logindata where brugernavn = ?");
+            preparedStatement.setString(1, username);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("key");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+    public void setKeyDB(String encodedKey, String username){
+
+
+        try {
+            //Forbidenlse til database
+            Connection con = sqlcon.getConnection();
+            //Forbered query statement
+            PreparedStatement preparedStatement = con.prepareStatement("UPDATE `jdbc-test`.`logindata` SET `key` = ? WHERE (`brugernavn` = ?)");
+            preparedStatement.setString(1, encodedKey);
+            preparedStatement.setString(2, username);
+
+            preparedStatement.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     public boolean fetchLoginDataDB(LoginData logindata) {
 
         this.logindata = logindata;
