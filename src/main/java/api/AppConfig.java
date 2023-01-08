@@ -1,6 +1,7 @@
 package api;
 
 
+import exceptionhandler.*;
 import filters.AuthFilter;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
@@ -18,6 +19,10 @@ public class AppConfig extends Application {
         classes.add(PatientService.class);
         classes.add(AftaleService.class);
         classes.add(AuthFilter.class);
+        classes.add(DataNotFoundExceptionMapper.class);
+        classes.add(NotAuthorizedExceptionMapper.class);
+        classes.add(ForbiddenExceptionMapper.class);
+        classes.add(GenericExceptionMapper.class);
         return classes;
     }
 }

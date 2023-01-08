@@ -19,7 +19,7 @@ public class AftaleService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{cpr}")
-    public Response findAftaleData(@PathParam("cpr") String cpr){
+    public Response findAftaleData(@PathParam("cpr") String cpr) {
 
         System.out.println("Aftale service aktiviteret");
 

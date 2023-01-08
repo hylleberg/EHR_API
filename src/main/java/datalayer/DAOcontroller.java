@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import exceptionhandler.DataNotFoundException;
+
 import jakarta.ws.rs.core.Response;
 import model.AftaleData;
 import model.LoginData;
@@ -17,7 +19,7 @@ public class DAOcontroller {
 
     private AftaleData aftaledata;
 
-    public String getKeyDB(String username){
+    public String getKeyDB(String username) {
         try {
             //Forbidenlse til database
             Connection con = sqlcon.getConnection();
@@ -36,7 +38,8 @@ public class DAOcontroller {
         return null;
 
     }
-    public void setKeyDB(String encodedKey, String username){
+
+    public void setKeyDB(String encodedKey, String username) {
 
 
         try {
@@ -54,6 +57,7 @@ public class DAOcontroller {
         }
 
     }
+
     public String fetchLoginDataDB(LoginData logindata) {
 
         this.logindata = logindata;
@@ -98,9 +102,6 @@ public class DAOcontroller {
 
                 System.out.println("Patient data hentet");
                 return Response.status(Response.Status.CREATED).entity(patientdata).build();
-            } else {
-
-
             }
 
         } catch (Exception e) {
@@ -108,7 +109,8 @@ public class DAOcontroller {
         }
         System.out.println("Intet CPR nr fundet.");
 
-        return Response.status(Response.Status.BAD_REQUEST).entity("Forkert CPR").build();
+        // return Response.status(Response.Status.BAD_REQUEST).entity("Forkert CPR").build();
+        throw new DataNotFoundException("Kunne ikke finde CPR nr.");
     }
 
     public Response fetchAftaleDataDB(PatientData patientdata) {
@@ -124,20 +126,20 @@ public class DAOcontroller {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-                while(resultSet.next()){
-                    AftaleData aftaledata = new AftaleData();
+            while (resultSet.next()) {
+                AftaleData aftaledata = new AftaleData();
 
-                    aftaledata.setDatetime(resultSet.getTimestamp("startdato"));
-                    aftaledata.setDuration(resultSet.getInt("varighed"));
-                    aftaledata.setNote(resultSet.getString("notat"));
+                aftaledata.setDatetime(resultSet.getTimestamp("startdato"));
+                aftaledata.setDuration(resultSet.getInt("varighed"));
+                aftaledata.setNote(resultSet.getString("notat"));
 
-                    aftaler.add(aftaledata);
+                aftaler.add(aftaledata);
 
-                    System.out.println("Aftale tilføjet til objekt");
+                System.out.println("Aftale tilføjet til objekt");
 
-                }
+            }
 
-                return Response.status(Response.Status.CREATED).entity(aftaler).build();
+            return Response.status(Response.Status.CREATED).entity(aftaler).build();
 
 
         } catch (Exception e) {
@@ -145,7 +147,7 @@ public class DAOcontroller {
         }
         System.out.println("Intet CPR nr fundet.");
 
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        throw new DataNotFoundException("Intet CPR nr fundet.");
     }
 
 }

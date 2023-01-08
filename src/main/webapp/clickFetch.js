@@ -1,4 +1,5 @@
-// Persist data on accidental refreshs
+// Persist data on accidental refreshs //
+//************************************//
 console.log("script running")
 if (sessionStorage.getItem("cpr") || sessionStorage.getItem("fornavn") || sessionStorage.getItem("efternavn")) {
     // Restore the contents of the text field
@@ -12,7 +13,11 @@ function clearSession(){
     sessionStorage.clear();
 
 }
+document.getElementById("userID").innerHTML = sessionStorage.getItem("user");
+document.getElementById("roleID").innerHTML = sessionStorage.getItem("role");
 
+
+//***********************************//
 async function fetchCPR() {
 
     let cprform = document.getElementById("cprform");
@@ -31,9 +36,8 @@ async function fetchCPR() {
     })
 
     const json = await res.text();
-
+    const obj = JSON.parse(json);
     if(res.status === 201){
-        const obj = JSON.parse(json);
         console.log(obj.fornavn)
         console.log(obj.efternavn)
         console.log(obj.adresse)
@@ -59,46 +63,12 @@ async function fetchCPR() {
         divButton.innerHTML = "";
       divButton.appendChild(button);
 
+     }else{
 
-
-  //      button.onclick =   function() {
- //           loadHTML("sitecontent", "journal.html");
-  //          document.getElementById("navnfelt2").innerHTML = obj.fornavn + " " + obj.efternavn;
-  //          document.getElementById("cprfelt2").innerHTML = obj.cpr;
- //           document.getElementById("adressefelt2").innerHTML = obj.adresse;
-  //      return false;
-  //      };
-
-
-
-  //  document.getElementById("adressefelt").innerHTML = obj.adresse;
-
-     }else if(res.status === 400){
-        document.getElementById("errorcode").innerHTML = "CPR findes ikke"
+        document.getElementById("errorcode").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage;
         document.getElementById("cprfelt").innerHTML = "";
         document.getElementById("navnfelt").innerHTML = "";
-        document.getElementById("adressefelt").innerHTML = "";
-
-     }else if(res.status === 401){
-        document.getElementById("errorcode").innerHTML = "Adgang nægtet."
-        document.getElementById("cprfelt").innerHTML = "";
-        document.getElementById("navnfelt").innerHTML = "";
-        document.getElementById("adressefelt").innerHTML = "";
-
-    }else if(res.status === 403){
-        document.getElementById("errorcode").innerHTML = "Du har ikke adgang til denne funktion."
-        document.getElementById("cprfelt").innerHTML = "";
-        document.getElementById("navnfelt").innerHTML = "";
-        document.getElementById("adressefelt").innerHTML = "";
-
-    }else{
-        document.getElementById("errorcode").innerHTML = "Server fejl..."
-        document.getElementById("cprfelt").innerHTML = "";
-        document.getElementById("navnfelt").innerHTML = "";
-        document.getElementById("adressefelt").innerHTML = "";
-
-
-    }
+     }
     console.log(res)
 
 }
@@ -121,11 +91,10 @@ async function fetchAftale(){
     })
     console.log(res)
     const json = await res.text();
+    const obj = JSON.parse(json);
 
     if(res.status === 201) {
         document.getElementById("errorfelt3").innerHTML = "";
-        const obj = JSON.parse(json);
-
         document.getElementById("aftaleTable").innerHTML = "";
 
         let myTable = document.querySelector('#aftaleTable');
@@ -165,13 +134,7 @@ async function fetchAftale(){
         });
         myTable.appendChild(table);
 
-    }else if(res.status === 401){
-        document.getElementById("errorfelt3").innerHTML = "Adgang nægtet."
-
-    }else if(res.status === 403){
-        document.getElementById("errorfelt3").innerHTML = "Du har ikke adgang til denne funktion."
-
     }else{
-        document.getElementById("errorfelt3").innerHTML = "Der skete en fejl, kunne ikke finde aftaler";
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
     }
 }

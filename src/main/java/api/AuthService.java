@@ -13,7 +13,7 @@ public class AuthService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response doLogin(LoginData logindata){
-
-        return lc.validateUser(logindata);}
+    public Response doLogin(LoginData logindata) {
+        return lc.validateUser(logindata);
+    }
 }

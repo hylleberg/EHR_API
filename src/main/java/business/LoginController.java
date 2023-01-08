@@ -4,24 +4,17 @@ package business;
 import datalayer.DAOcontroller;
 
 
-import io.jsonwebtoken.JwsHeader;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
-import io.jsonwebtoken.security.Keys;
+import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Response;
 import model.LoginData;
 
 import io.jsonwebtoken.Jwts;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-;
-import java.util.Base64;
 import java.util.Calendar;
 
 public class LoginController {
-
 
 
     public Response validateUser(LoginData logindata) {
@@ -31,23 +24,24 @@ public class LoginController {
         // Check DB for valid logindata, return user role
         String res = dc.fetchLoginDataDB(logindata);
 
-        if (res.length()>0) {
+        if (res.length() > 0) {
 
-                System.out.println("Kombination korrekt");
-                String token = issueToken(logindata.getUsername(), res);
+            System.out.println("Kombination korrekt");
+            String token = issueToken(logindata.getUsername(), res);
 
-                System.out.println("Token created");
-                System.out.println("issued token: " +  token);
+            System.out.println("Token created");
+            System.out.println("issued token: " + token);
 
             return Response.status(Response.Status.CREATED).entity(token).build();
 
         } else {
             System.out.println("Brugernavn/password kombination forkert.");
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Forkert kombination").build();
+            // return Response.status(Response.Status.UNAUTHORIZED).entity("Forkert kombination").build();
+            throw new NotAuthorizedException("Adgang nægtet.");
         }
     }
 
-    public String issueToken(String username, String role){
+    public String issueToken(String username, String role) {
         DAOcontroller dc = new DAOcontroller();
 
         Calendar expiry = Calendar.getInstance();
@@ -60,14 +54,14 @@ public class LoginController {
         System.out.println("Encdoed key: " + key);
         //Save encodedKey to DB, referenced to claim "username"
         dc.setKeyDB(secretString, username);
-        String prepUsername = "|"+username+"|";
+        String prepUsername = "|" + username + "|";
 
         //Padding for role
-        String prepRole = "?"+role + "?";
+        String prepRole = "?" + role + "?";
 
         //Build token, signwith key
         return Jwts.builder()
-                .claim("username",prepUsername)
+                .claim("username", prepUsername)
                 .claim("Role", prepRole)
                 .signWith(key)
                 .setExpiration(expiry.getTime())

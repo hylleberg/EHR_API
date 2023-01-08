@@ -20,10 +20,9 @@ public class PatientService {
     @Secured({Role.doctor})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findPatientData(@PathParam("cpr") String cpr){
+    public Response findPatientData(@PathParam("cpr") String cpr) {
 
         System.out.println("Patientservice aktiveret");
-
         PatientData patientdata = new PatientData();
         patientdata.setCpr(cpr);
         return dc.fetchPatientDataDB(patientdata);
