@@ -3,10 +3,12 @@ package api;
 import filters.Secured;
 import jakarta.ws.rs.*;
 
+
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import datalayer.DAOcontroller;
 import model.PatientData;
+import model.Role;
 
 
 @Path("{cpr}")
@@ -15,7 +17,7 @@ public class PatientService {
     private static DAOcontroller dc = new DAOcontroller();
 
 
-    @Secured
+    @Secured({Role.doctor})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response findPatientData(@PathParam("cpr") String cpr){

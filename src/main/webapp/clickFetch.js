@@ -85,6 +85,12 @@ async function fetchCPR() {
         document.getElementById("navnfelt").innerHTML = "";
         document.getElementById("adressefelt").innerHTML = "";
 
+    }else if(res.status === 403){
+        document.getElementById("errorcode").innerHTML = "Du har ikke adgang til denne funktion."
+        document.getElementById("cprfelt").innerHTML = "";
+        document.getElementById("navnfelt").innerHTML = "";
+        document.getElementById("adressefelt").innerHTML = "";
+
     }else{
         document.getElementById("errorcode").innerHTML = "Server fejl..."
         document.getElementById("cprfelt").innerHTML = "";
@@ -161,6 +167,9 @@ async function fetchAftale(){
 
     }else if(res.status === 401){
         document.getElementById("errorfelt3").innerHTML = "Adgang nægtet."
+
+    }else if(res.status === 403){
+        document.getElementById("errorfelt3").innerHTML = "Du har ikke adgang til denne funktion."
 
     }else{
         document.getElementById("errorfelt3").innerHTML = "Der skete en fejl, kunne ikke finde aftaler";

@@ -6,7 +6,16 @@ header {
     box-sizing: border-box;
     font-family: 'Open Sans', sans-serif;
 }
+.footer_container{
+    font-size: 12px;
+    font-family: 'Open Sans', sans-serif;
+    color: #eeeeee;
+    text-align: right;
 
+    width: 100%;
+    max-width: 1600px;
+
+}
 body {
     --color-primary: #009579;
     --color-primary-dark: #007f67;

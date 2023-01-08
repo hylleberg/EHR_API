@@ -28,12 +28,14 @@ public class LoginController {
 
         DAOcontroller dc = new DAOcontroller();
 
-        boolean res = dc.fetchLoginDataDB(logindata);
+        // Check DB for valid logindata, return user role
+        String res = dc.fetchLoginDataDB(logindata);
 
-        if (res == true) {
+        if (res.length()>0) {
 
                 System.out.println("Kombination korrekt");
-                String token = issueToken(logindata.getUsername());
+                String token = issueToken(logindata.getUsername(), res);
+
                 System.out.println("Token created");
                 System.out.println("issued token: " +  token);
 
@@ -45,32 +47,30 @@ public class LoginController {
         }
     }
 
-    public String issueToken(String username){
+    public String issueToken(String username, String role){
         DAOcontroller dc = new DAOcontroller();
 
         Calendar expiry = Calendar.getInstance();
         expiry.add(Calendar.MINUTE, 240);
 
-
+        //generate secret key
         SecretKey key = new generateKey().getKey();
         //Encode key to String for DB
         String secretString = Encoders.BASE64.encode(key.getEncoded());
         System.out.println("Encdoed key: " + key);
         //Save encodedKey to DB, referenced to claim "username"
         dc.setKeyDB(secretString, username);
-        System.out.println("Key hash: " + key.hashCode());
         String prepUsername = "|"+username+"|";
+
+        //Padding for role
+        String prepRole = "?"+role + "?";
 
         //Build token, signwith key
         return Jwts.builder()
                 .claim("username",prepUsername)
+                .claim("Role", prepRole)
                 .signWith(key)
                 .setExpiration(expiry.getTime())
                 .compact();
-    }
-
-
-    private String decode(String encodedString) {
-      return new String(Base64.getUrlDecoder().decode(encodedString));
     }
 }

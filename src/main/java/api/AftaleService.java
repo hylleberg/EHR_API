@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import model.AftaleData;
 import model.PatientData;
+import model.Role;
 
 
 @Path("aftale")
@@ -14,7 +15,7 @@ public class AftaleService {
 
     private static DAOcontroller dc = new DAOcontroller();
 
-    @Secured
+    @Secured({Role.doctor, Role.patient})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{cpr}")

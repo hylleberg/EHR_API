@@ -54,7 +54,7 @@ public class DAOcontroller {
         }
 
     }
-    public boolean fetchLoginDataDB(LoginData logindata) {
+    public String fetchLoginDataDB(LoginData logindata) {
 
         this.logindata = logindata;
 
@@ -69,14 +69,14 @@ public class DAOcontroller {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
 
-                return true;
+                return resultSet.getString("role");
 
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return false;
+        return "";
 
     }
 
