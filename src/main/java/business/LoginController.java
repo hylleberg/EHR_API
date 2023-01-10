@@ -63,6 +63,7 @@ public class LoginController {
 
         //Build token, signwith key
         return Jwts.builder()
+                .setSubject(prepUsername)
                 .claim("username", prepUsername)
                 .claim("Role", prepRole)
                 .signWith(key)

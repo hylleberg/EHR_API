@@ -53,6 +53,7 @@ async function fetchPatientData() {
     document.getElementById("cprfelt_sidebar").innerHTML = obj.cpr;
     document.getElementById("addfelt_sidebar").innerHTML = obj.address;
     document.getElementById("cityfelt_sidebar").innerHTML = obj.city;
+    document.getElementById("error_sidebar").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage;
 }
 
 //*******************************************************************************************************************//

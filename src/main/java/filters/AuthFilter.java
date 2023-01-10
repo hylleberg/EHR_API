@@ -16,6 +16,7 @@ import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 
+import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.ext.Provider;
 import model.Role;
 
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -40,7 +42,7 @@ public class AuthFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-
+        String username = "";
 
         System.out.println("Caught in authFilter!");
         Secured annotation = resourceInfo.getResourceMethod().getAnnotation(Secured.class);
@@ -64,7 +66,8 @@ public class AuthFilter implements ContainerRequestFilter {
 
 
         // Validate the token
-        String role = verifyToken(token);
+
+        String [] returnTouple = verifyToken(token);        // {claimedUser, role}
         //Role stuff
         Class<?> resourceClass = resourceInfo.getResourceClass();
         List<Role> classRoles = extractRoles(resourceClass);
@@ -75,15 +78,50 @@ public class AuthFilter implements ContainerRequestFilter {
         List<Role> methodRoles = extractRoles(resourceMethod);
 
         if (methodRoles.isEmpty()) {
-            checkPermissions(classRoles, role);
+            checkPermissions(classRoles, returnTouple[1]);
         } else {
-            checkPermissions(methodRoles, role);
+            checkPermissions(methodRoles,returnTouple[1]);
         }
 
+        String test = "haps";
+        final SecurityContext securityContext = requestContext.getSecurityContext();
+        requestContext.setSecurityContext(new SecurityContext() {
 
+            @Override
+            public Principal getUserPrincipal() {
+
+                return new Principal() {
+                    @Override
+                    public String getName() {
+                        System.out.println("returning principal: " + returnTouple[0]);
+                        return returnTouple[0];
+                    }
+                };
+            }
+
+            @Override
+            public boolean isUserInRole(String role) {
+
+                if(returnTouple[1].equals("patient")){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+
+            @Override
+            public boolean isSecure() {
+                return false;
+            }
+
+            @Override
+            public String getAuthenticationScheme() {
+                return null;
+            }
+        });
     }
 
-    public String verifyToken(String token) {
+    public String[] verifyToken(String token) {
         try {
             //Split token, payload = index 1
             Base64.Decoder decoder = Base64.getUrlDecoder();
@@ -92,19 +130,19 @@ public class AuthFilter implements ContainerRequestFilter {
             System.out.println(payload);
 
             //Workaround, padded payload with "|" in order to extract user/role
-            //Principal only produced payload token...
-            String[] klonks = payload.split("\\|");
-            String claimedUser = new String(klonks[1]); //CPR nummeret login
-
-            PatientService ps = new PatientService();
+            String[] returnTouple = new String[2];
+            returnTouple[0] = payload.split("\\|")[1]; //claimedUser
 
 
-            String[] klonks2 = payload.split("\\?");
-            String claimedRole = new String(klonks2[1]);
+          //  String[] klonks2 = payload.split("\\?");
+          //  String claimedRole = klonks2[1];
+            returnTouple[1] = payload.split("\\?")[1]; //role
+
+            System.out.println(returnTouple[0]+ " " + returnTouple[1]);
 
             //Fetch secret key with reference to user
             DAOcontroller dc = new DAOcontroller();
-            SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(dc.getKeyDB(claimedUser)));
+            SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(dc.getKeyDB(returnTouple[0])));
             System.out.println("Decoded key: " + key);
 
             //Signature/token verification
@@ -115,7 +153,7 @@ public class AuthFilter implements ContainerRequestFilter {
 
             System.out.println("Body: " + jwt.getBody());
             // Return role for role-based auth
-            return claimedRole;
+            return returnTouple;
 
         } catch (Exception e) {
             System.out.println("Verification failed. Not authorized.");
