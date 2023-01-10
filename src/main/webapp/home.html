@@ -14,12 +14,12 @@
 
     <header>
 
-        <p><a href="#" class="logo">DTU-EHR system</a> <img src="./ekglogo.png" width="" class="ekglogo">
+        <p><a href="#" class="logo">DTU-EHR system</a>
         </p>
 
         <ul>
             <li><a href="#" onclick='loadHTML("sitecontent", "welcome.html")'>Hjem</a></li>
-            <li><a href="#" onclick='loadHTML("sitecontent", "findpatient.html")'>Find patient</a></li>
+            <li><a href="#" onclick='loadHTML("sitecontent", "findpatient.html")' id="findPatient">Find patient</a></li>
             <li><a href="#" onclick='loadHTML("sitecontent", "journal.html")'>Journal</a></li>
             <li><a href="#" onclick='loadHTML("sitecontent", "aftaler.html")'>Konsultationer</a></li>
             <li><a href="#popup1" >Log-ud</a></li>
@@ -44,6 +44,7 @@
             <h1 id="navnfelt_sidebar"></h1>
             <h2 id="cprfelt_sidebar"></h2>
             <div id="addfelt_sidebar"></div>
+            <div id="cityfelt_sidebar"></div>
 
         </div>
 
@@ -60,7 +61,7 @@
 
 </body>
 <footer>
-    <div class="footer_container">Du er logget ind som: <div id="userID"></div>( <div id="roleID"></div>) </div>
+    <div class="footer_container">Du er logget ind som: <ins id="userID"></ins>( <ins id="roleID"></ins>) </div>
     </footer>
 <script src="clickFetch.js"></script>
 <script src="./dynamichtml.js"></script>

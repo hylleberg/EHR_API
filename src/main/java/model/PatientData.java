@@ -4,9 +4,19 @@ public class PatientData {
 
 
     private String cpr;
-    private String fornavn;
-    private String efternavn;
-    private String adresse;
+    private String firstname;
+    private String lastname;
+    private String address;
+
+    private String city;
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
 
     public String getCpr() {
         return cpr;
@@ -16,28 +26,28 @@ public class PatientData {
         this.cpr = cpr;
     }
 
-    public String getFornavn() {
-        return fornavn;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setFornavn(String fornavn) {
-        this.fornavn = fornavn;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public String getEfternavn() {
-        return efternavn;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setEfternavn(String efternavn) {
-        this.efternavn = efternavn;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
-    public String getAdresse() {
-        return adresse;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

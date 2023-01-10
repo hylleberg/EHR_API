@@ -24,7 +24,7 @@ public class DAOcontroller {
             //Forbidenlse til database
             Connection con = sqlcon.getConnection();
             //Forbered query statement
-            PreparedStatement preparedStatement = con.prepareStatement("select * from logindata where brugernavn = ?");
+            PreparedStatement preparedStatement = con.prepareStatement("select * from user where username = ?");
             preparedStatement.setString(1, username);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -46,7 +46,7 @@ public class DAOcontroller {
             //Forbidenlse til database
             Connection con = sqlcon.getConnection();
             //Forbered query statement
-            PreparedStatement preparedStatement = con.prepareStatement("UPDATE `jdbc-test`.`logindata` SET `key` = ? WHERE (`brugernavn` = ?)");
+            PreparedStatement preparedStatement = con.prepareStatement("UPDATE `s112786`.`user` SET `key` = ? WHERE (`username` = ?)");
             preparedStatement.setString(1, encodedKey);
             preparedStatement.setString(2, username);
 
@@ -66,7 +66,7 @@ public class DAOcontroller {
             //Forbidenlse til database
             Connection con = sqlcon.getConnection();
             //Forbered query statement
-            PreparedStatement preparedStatement = con.prepareStatement("select * from logindata where brugernavn = ? and password = ?");
+            PreparedStatement preparedStatement = con.prepareStatement("select * from user where username = ? and password = ?");
             preparedStatement.setString(1, logindata.getUsername());
             preparedStatement.setString(2, logindata.getPassword());
 
@@ -96,9 +96,10 @@ public class DAOcontroller {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                patientdata.setFornavn(resultSet.getString("fornavn"));
-                patientdata.setEfternavn(resultSet.getString("efternavn"));
-                patientdata.setAdresse(resultSet.getString("adresse"));
+                patientdata.setFirstname(resultSet.getString("firstname"));
+                patientdata.setLastname(resultSet.getString("lastname"));
+                patientdata.setAddress(resultSet.getString("address"));
+                patientdata.setCity(resultSet.getString("city"));
 
                 System.out.println("Patient data hentet");
                 return Response.status(Response.Status.CREATED).entity(patientdata).build();
@@ -121,7 +122,7 @@ public class DAOcontroller {
 
         try {
             Connection con = sqlcon.getConnection();
-            PreparedStatement preparedStatement = con.prepareStatement("select * from aftaler where cpr = ?");
+            PreparedStatement preparedStatement = con.prepareStatement("select * from consultation where cpr = ?");
             preparedStatement.setString(1, patientdata.getCpr());
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -129,9 +130,9 @@ public class DAOcontroller {
             while (resultSet.next()) {
                 AftaleData aftaledata = new AftaleData();
 
-                aftaledata.setDatetime(resultSet.getTimestamp("startdato"));
-                aftaledata.setDuration(resultSet.getInt("varighed"));
-                aftaledata.setNote(resultSet.getString("notat"));
+                aftaledata.setDatetime(resultSet.getTimestamp("starttime"));
+                aftaledata.setDuration(resultSet.getInt("duration"));
+                aftaledata.setNote(resultSet.getString("note"));
 
                 aftaler.add(aftaledata);
 

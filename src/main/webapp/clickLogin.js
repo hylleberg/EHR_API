@@ -23,6 +23,10 @@ async function clickLogin() {
         sessionStorage.setItem("user", obj.username);
         sessionStorage.setItem("role", obj.Role);
 
+        if(obj.Role == "?patient?"){
+            sessionStorage.setItem("cpr", obj.username.substring(1, ((obj.username.length)-1)));
+        }
+
         window.location.href = "home.html";
 
     } else  {

@@ -10,7 +10,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
     @Override
     public Response toResponse(Throwable e) {
         System.out.println("Generic expection issued");
-        ErrorMessage errorMsg = new ErrorMessage(e.getMessage(), 500);
+        ErrorMessage errorMsg = new ErrorMessage(e.getMessage(), 418);
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorMsg).build();
     }
 }

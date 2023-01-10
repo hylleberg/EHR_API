@@ -49,9 +49,11 @@ public class LoginController {
 
         //generate secret key
         SecretKey key = new generateKey().getKey();
+
         //Encode key to String for DB
         String secretString = Encoders.BASE64.encode(key.getEncoded());
         System.out.println("Encdoed key: " + key);
+
         //Save encodedKey to DB, referenced to claim "username"
         dc.setKeyDB(secretString, username);
         String prepUsername = "|" + username + "|";

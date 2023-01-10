@@ -1,11 +1,11 @@
 // Persist data on accidental refreshs //
-//************************************//
+//*******************************************************************************************************************//
 console.log("script running")
-if (sessionStorage.getItem("cpr") || sessionStorage.getItem("fornavn") || sessionStorage.getItem("efternavn")) {
+if (sessionStorage.getItem("cpr") || sessionStorage.getItem("firstname") || sessionStorage.getItem("lastname")) {
     // Restore the contents of the text field
     console.log("Restoring")
-    document.getElementById("navnfelt_sidebar").innerHTML = sessionStorage.getItem("fornavn") +" "+sessionStorage.getItem("efternavn");
-    document.getElementById("cprfelt_sidebar").innerHTML = sessionStorage.getItem("cpr");
+//    document.getElementById("navnfelt_sidebar").innerHTML = sessionStorage.getItem("firstname") +" "+sessionStorage.getItem("lastname");
+ //   document.getElementById("cprfelt_sidebar").innerHTML = sessionStorage.getItem("cpr");
 
 }
 
@@ -13,11 +13,52 @@ function clearSession(){
     sessionStorage.clear();
 
 }
-document.getElementById("userID").innerHTML = sessionStorage.getItem("user");
-document.getElementById("roleID").innerHTML = sessionStorage.getItem("role");
+//*******************************************************************************************************************//
+
+// Removing padding for view //
+//*******************************************************************************************************************//
+
+    let userText = sessionStorage.getItem("user").substring(1, (sessionStorage.getItem("user").length)-1)
+    let roleText = sessionStorage.getItem("role").substring(1, (sessionStorage.getItem("role").length)-1)
+document.getElementById("userID").innerHTML =  userText;
+document.getElementById("roleID").innerHTML = roleText;
+//*******************************************************************************************************************//
 
 
-//***********************************//
+//Check if user is patient //
+//*******************************************************************************************************************//
+
+if(sessionStorage.getItem("role") == "?patient?"){
+    document.getElementById("findPatient").classList.add("hidden");
+    fetchPatientData();
+
+}
+async function fetchPatientData() {
+    let object = {};
+    object["cpr"] = sessionStorage.getItem("cpr");
+    console.log(object);
+
+    let bearer = "Bearer " + localStorage.getItem("token")
+    const res = await fetch("api/" + object.cpr, {
+        method: "GET",
+        headers: {
+            'Authorization': bearer,
+        },
+    });
+
+    const json = await res.text();
+    const obj = JSON.parse(json);
+
+    document.getElementById("navnfelt_sidebar").innerHTML = obj.firstname + " " + obj.lastname;
+    document.getElementById("cprfelt_sidebar").innerHTML = obj.cpr;
+    document.getElementById("addfelt_sidebar").innerHTML = obj.address;
+    document.getElementById("cityfelt_sidebar").innerHTML = obj.city;
+}
+
+//*******************************************************************************************************************//
+
+// function to API fetch a patient //
+//*******************************************************************************************************************//
 async function fetchCPR() {
 
     let cprform = document.getElementById("cprform");
@@ -37,12 +78,13 @@ async function fetchCPR() {
 
     const json = await res.text();
     const obj = JSON.parse(json);
+
     if(res.status === 201){
-        console.log(obj.fornavn)
-        console.log(obj.efternavn)
+        console.log(obj.firstname)
+        console.log(obj.lastname)
         console.log(obj.adresse)
         document.getElementById("errorcode").innerHTML = ""
-        document.getElementById("navnfelt").innerHTML = obj.fornavn + " " + obj.efternavn;
+        document.getElementById("navnfelt").innerHTML = obj.firstname + " " + obj.lastname;
         document.getElementById("cprfelt").innerHTML = "(" + obj.cpr + ")";
 
       var button = document.createElement("button");
@@ -50,13 +92,14 @@ async function fetchCPR() {
       button.setAttribute('type', 'button');
       button.classList.add('button');
         button.onclick = function(){
-            sessionStorage.setItem("fornavn", obj.fornavn);
-            sessionStorage.setItem("efternavn", obj.efternavn);
+            sessionStorage.setItem("firstname", obj.firstname);
+            sessionStorage.setItem("lastname", obj.lastname);
             sessionStorage.setItem("cpr", obj.cpr);
-            document.getElementById("navnfelt_sidebar").innerHTML = obj.fornavn + " " + obj.efternavn;
+            document.getElementById("navnfelt_sidebar").innerHTML = obj.firstname + " " + obj.lastname;
             document.getElementById("cprfelt_sidebar").innerHTML = obj.cpr;
-            document.getElementById("addfelt_sidebar").innerHTML = obj.adresse;
-            document.getElementById("successcode").innerHTML = "Du har nu valgt " + sessionStorage.getItem("fornavn") + " " + sessionStorage.getItem("efternavn") + ".";
+            document.getElementById("addfelt_sidebar").innerHTML = obj.address;
+            document.getElementById("cityfelt_sidebar").innerHTML = obj.city;
+            document.getElementById("successcode").innerHTML = "Du har nu valgt " + sessionStorage.getItem("firstname") + " " + sessionStorage.getItem("lastname") + ".";
       };
 
       var divButton = document.getElementById("chooseButton")
@@ -73,15 +116,18 @@ async function fetchCPR() {
 
 }
 
+// change visibility of div element //
+//*******************************************************************************************************************//
 function changeVisibility(showDiv, hideDiv){
     document.getElementById(showDiv).classList.remove("hidden");
-    document.getElementById(hideDiv).classList.add("hidden")
+    document.getElementById(hideDiv).classList.add("hidden");
 
 }
+//*******************************************************************************************************************//
 
+// API fetch all consultations from a chosen CPR //
+//*******************************************************************************************************************//
 async function fetchAftale(){
-    let cpr3 = JSON.stringify({cpr: sessionStorage.getItem("cpr")});
-
     let bearer = "Bearer " + localStorage.getItem("token")
     const res = await fetch("api/aftale/"+ sessionStorage.getItem("cpr"), {
         method: "GET",
@@ -92,14 +138,20 @@ async function fetchAftale(){
     console.log(res)
     const json = await res.text();
     const obj = JSON.parse(json);
+    console.log(obj);
+    const obj2 = obj;
+    obj2.forEach(o => delete o.note);
+    console.log(obj2);
+
 
     if(res.status === 201) {
+        changeVisibility('previousAftaler', 'konsultationContainer');
         document.getElementById("errorfelt3").innerHTML = "";
         document.getElementById("aftaleTable").innerHTML = "";
 
         let myTable = document.querySelector('#aftaleTable');
 
-        let headers = ['Startdato', 'Varighed', 'Notat', 'Gå til'];
+        let headers = ['Startdato', 'Varighed', 'Gå til'];
 
         let table = document.createElement('table');
         let headerRow = document.createElement('tr');
@@ -112,7 +164,7 @@ async function fetchAftale(){
 
         table.appendChild(headerRow);
 
-        obj.forEach(objekt => {
+        obj2.forEach(objekt => {
             let row = document.createElement('tr');
             Object.values(objekt).forEach(text => {
                 let cell = document.createElement('td');
@@ -132,9 +184,20 @@ async function fetchAftale(){
             table.appendChild(row);
 
         });
+        table.classList.add("table")
         myTable.appendChild(table);
 
     }else{
         document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
     }
+}
+
+//*******************************************************************************************************************//
+
+async function createAftale(){
+    let aftaleForm = document.getElementById("aftaleForm");
+    const formData = new FormData(aftaleForm);
+    const object = Object.fromEntries(formData);
+    console.log(object);
+
 }

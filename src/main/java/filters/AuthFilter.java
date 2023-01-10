@@ -1,5 +1,6 @@
 package filters;
 
+import api.PatientService;
 import datalayer.DAOcontroller;
 
 import exceptionhandler.ForbiddenException;
@@ -93,7 +94,10 @@ public class AuthFilter implements ContainerRequestFilter {
             //Workaround, padded payload with "|" in order to extract user/role
             //Principal only produced payload token...
             String[] klonks = payload.split("\\|");
-            String claimedUser = new String(klonks[1]);
+            String claimedUser = new String(klonks[1]); //CPR nummeret login
+
+            PatientService ps = new PatientService();
+
 
             String[] klonks2 = payload.split("\\?");
             String claimedRole = new String(klonks2[1]);
