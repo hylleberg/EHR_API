@@ -4,66 +4,99 @@
     <meta charset="UTF-8">
     <title>DTU-EHR System</title>
 
-  <link rel="stylesheet" href="style_home.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style_home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@500;700&display=swap" rel="stylesheet">
 
 </head>
-<body onload='loadHTML("sitecontent", "welcome.html")'>
+<body onload='loadWelcome()'>
 
-    <header>
+<header>
 
-        <p><a href="#" class="logo">DTU-EHR system</a>
-        </p>
+    <p><a href="#" class="logo">DTU-EHR system</a>
+    </p>
 
-        <ul>
-            <li><a href="#" onclick='loadHTML("sitecontent", "welcome.html")'>Hjem</a></li>
-            <li><a href="#" onclick='loadHTML("sitecontent", "findpatient.html")' id="findPatient">Find patient</a></li>
-            <li><a href="#" onclick='loadHTML("sitecontent", "journal.html")'>Journal</a></li>
-            <li><a href="#" onclick='loadHTML("sitecontent", "aftaler.html")'>Konsultationer</a></li>
-            <li><a href="#popup1" >Log-ud</a></li>
+    <ul>
+        <li><a href="#" onclick='loadWelcome()'>Hjem</a></li>
+        <li><a href="#" onclick='loadHTML("sitecontent", "journal.html")'>Journal</a></li>
+        <li><a href="#" onclick='loadAftaler()'>Konsultationer</a></li>
+        <li><a href="#" onclick='loadHTML("sitecontent", "lab.html")'>Laboratoriesvar</a></li>
+        <li><a href="#popup1">Log-ud</a></li>
 
-        </ul>
+    </ul>
 
-        <div id="popup1" class="overlay">
-            <div class="popup">
-                <h2>Du er ved at logge ud</h2>
-                <a class="close" href="#">&times;</a>
-                <div class="content1">
-                    Er du sikker på du vil logge ud?<br><br>
-                   <p><form action="./index.html" onclick="clearSession()"><button class="button" type="Submit">Ja tak</button></form></p>
+    <div id="popup1" class="overlay">
+        <div class="popup">
+            <h2>Du er ved at logge ud</h2>
+            <a class="close" href="#">&times;</a>
+            <div class="content1">
+                Er du sikker på du vil logge ud?<br><br>
+                <p>
+                <form action="./index.html" onclick="clearSession()">
+                    <button class="button" type="Submit">Ja tak</button>
+                </form>
+                </p>
 
-                    <button class="button" type="Submit">Annuller</button>
-                </div>
+                <button class="button" type="Submit">Annuller</button>
             </div>
         </div>
-    </header>
-    <div class="main-content">
-        <div class="sidebar">
+    </div>
+</header>
+<div class="main-content">
+    <div class="sidebar">
+        <div id="findPatientDiv">
+            <h1>Find patient </h1>
+            <hr>
+
+            <div></div>
+            <form class="form" id="cprform">
+                Indtast CPR nummer for at søge patient:
+                <input type="text" class="input" name="cpr" width="200px" autofocus placeholder="Indtast CPR nr:">
+            </form>
+            <button class="button" type="Submit" onclick="fetchCPR()" id="cprbutton">Søg CPR</button>
+            <br><br>
+            <hr>
+            <div class="error-message" id="errorcode"></div>
+            <div class="foundCPRDiv">
+                <div class="" id="navnfelt"></div>
+                <div class="" id="cprfelt"></div>
+                <div id="chooseButton"></div>
+                <div class="success-message" id="successcode"></div>
+            </div>
+
+
+        </div>
+        <div id="showPatientDiv">
             <h1 id="navnfelt_sidebar"></h1>
             <h2 id="cprfelt_sidebar"></h2>
             <div id="addfelt_sidebar"></div>
             <div id="cityfelt_sidebar"></div>
-            <div id="error_sidebar" class="error-message"></div>
+
+            <div id="chooseNewPatientButton"></div>
 
         </div>
+        <div id="error_sidebar" class="error-message"></div>
+    </div>
 
 
-        <div class="sitecontent" id="sitecontent">
+    <div class="sitecontent" id="sitecontent">
 
 
-
-        </div>
+    </div>
 </div>
-
-
 
 
 </body>
 <footer>
-    <div class="footer_container">Du er logget ind som: <ins id="userID"></ins>( <ins id="roleID"></ins>) </div>
-    </footer>
-<script src="clickFetch.js"></script>
+    <div class="footer_container">Du er logget ind som:
+        <ins id="userID"></ins>
+        (
+        <ins id="roleID"></ins>
+        )
+    </div>
+</footer>
 <script src="./dynamichtml.js"></script>
+<script src="clickFetch.js"></script>
+
 </html>

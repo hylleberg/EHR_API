@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="" id="aftaleMain">
+
+  <div class ="container" id="konsultationContainer">
+    <h1>Konsultationer</h1>
+    <hr>
+    <br>
+    <div style="display: flex; align-items: center; column-gap: 20px; max-width: 400px; width:100%; justify-content: space-between;">
+    <button class="button" type="Submit" onclick="fetchAftalerWorker()" id="hentAftalerWorkerButton">Se
+      konsultationsliste for læge
+    </button>
+    <button class="button" type="Submit" onclick="fetchAftalerPatient()" id="hentAftalerPatientButton">Se
+      konsultationsliste for patient
+    </button>
+      </div>
+
+  </div>
+  <div class="error-message" id="errorfelt3"></div>
+
+  <div class="hidden" id="previousAftalerWorker">
+    <h1>Konsultationsliste for læge</h1>
+    <hr>
+    <div class="aftaleListContainer" id="aftaleListContainer1">
+      <div id="aftaleWorkerTable"></div>
+    </div>
+    <button class="button" type="Submit" onclick="changeVisibility('konsultationContainer', 'previousAftalerWorker');
+      document.getElementById('aftaleWorkerTable').innerHTML ='';">Gå tilbage</button>
+  </div>
+
+  <div class="hidden" id="previousAftalerPatient">
+    <h1>Konsultationsliste for patient</h1>
+    <hr>
+    <div class="aftaleListContainer" id="aftaleListContainer2">
+      <div id="aftalePatientTable"></div>
+
+    </div>
+    <button class="button" type="Submit" onclick="changeVisibility('konsultationContainer', 'previousAftalerPatient');
+      document.getElementById('aftalePatientTable').innerHTML ='';">Gå tilbage</button>
+  </div>
+
+  <div class="hidden" id="showAftaleDiv">
+    <h1>Tidligere konsultationer</h1>
+    <hr>
+    <div style="display: flex;, column-gap: 50px; max-width: 300px; width:100%; justify-content: space-between;">
+      <label>Dato: <div id="datefelt" class="fields"></div></label><br>
+      <label>Varighed: <div id="durationfelt" class="fields"></div></label>
+    </div><br>
+    <label>Behandler:  <div id="workerusernamefelt" class="fields"></div></label><br>
+
+    <label>Kommentar:  <textarea id="commentfelt" class="comment" readonly></textarea></label><br>
+    <button class="button" type="Submit" onclick="changeVisibility('previousAftalerPatient', 'showAftaleDiv')">
+      Gå tilbage
+    </button>
+  </div>
+
+
+
+</div>
+</body>
+</html>

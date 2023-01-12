@@ -4,16 +4,48 @@ import java.sql.Timestamp;
 
 public class AftaleData {
 
-    private Timestamp datetime;
+    private String workerusername;
+    private String cpr;
+    private String datetime;
     private int duration;
     private String note;
 
-    public String getDatetime() {
-        return datetime.toString();
+    private int id;
+
+
+    public int getId() {
+        return id;
     }
 
-    public void setDatetime(Timestamp datetime) {
-        this.datetime = datetime;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCpr() {
+        return cpr;
+    }
+
+    public void setCpr(String cpr) {
+        this.cpr = cpr;
+    }
+
+    public String getWorkerusername() {
+        return workerusername;
+    }
+
+    public void setWorkerusername(String workerusername) {
+        this.workerusername = workerusername;
+    }
+
+    public String getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(String datetime) {
+
+        String tempDatetime = datetime.replace(" ", "T");
+        String returnDatetime = tempDatetime + "Z";
+        this.datetime = returnDatetime;
     }
 
     public int getDuration() {

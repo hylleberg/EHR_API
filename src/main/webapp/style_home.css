@@ -186,8 +186,21 @@ textarea.subject {
     height: 200px;
 }
 
+textarea.comment{
+    resize: none;
+    width: 700px;
+    height: 200px;
+    overflow: scroll;
+
+
+}
+
+div.fields{
+
+    font-weight: normal;
+}
 .button{
-    height: 30px;
+    height: 40px;
     width: 200px;
 
     font-weight: bold;
@@ -198,7 +211,25 @@ textarea.subject {
     outline: none;
     cursor: pointer;
     background: var(--color-primary);
+}
 
+.button_select{
+    height: 30px;
+    width: 200px;
+
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: black;
+    border-radius: var(--border-radius);
+    border-color: var(--color-primary);
+    border-width: 1px;
+    outline: none;
+    cursor: pointer;
+    background: #ffffff;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 
@@ -233,10 +264,20 @@ hr.style-one {
     display:none;
 }
 
+
 .aftaleListContainer{
 
     height:500px;
     width:900px;
+    overflow:auto;
+    padding:2%;
+
+}
+
+.flagContainer{
+
+    height:300px;
+    width:500px;
     overflow:auto;
     padding:2%;
 
@@ -306,7 +347,7 @@ hr.style-one {
     color: var(--color-succes);
 }
 
-.table {
+.table1 {
     border-collapse: collapse;
     border: 1px solid black;
     border-width: thin;
@@ -314,22 +355,21 @@ hr.style-one {
     font-size: 1em;
     font-family: sans-serif;
     width: 100%;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
-.table th,
-.table td {
+.table1 th,
+.table1 td {
     padding: 12px 15px;
     text-align: left;
     border: 1px solid black;
 }
 
 
-.table tbody tr:nth-of-type(even) {
+.table1 tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
 }
 
-.table tbody tr:last-of-type {
+.table1 tbody tr:last-of-type {
     border-bottom: 2px solid #009879;
 }
 .container {
@@ -354,4 +394,9 @@ hr.style-one {
 }
 #second {
 
+}
+
+label {
+
+    font-weight: bold;
 }

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aftaler</title>
+    <link rel="stylesheet" href="style_home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body onload="">
+
+<div class="" id="aftaleMain">
+
+    <div class ="container" id="konsultationContainer" >
+        <h1>Konsultationer</h1>
+        <hr>
+        <br>
+        <div style="display: flex; align-items: center; column-gap: 20px; max-width: 400px; width:100%; justify-content: space-between;">
+        <button class="button" type="Submit" onclick="fetchAftalerPatient('previousAftalerPatient')" id="hentAftalerPatientButton">Se dine
+            tidligere konsultationer
+        </button>
+        <button class="button" type="Submit"
+                onclick="changeVisibility('opretAftale', 'konsultationContainer')" id="createAftaleButton">Anmod ny
+            konsultation
+        </button>
+            </div>
+        <div class="error-message" id="errorfelt4"></div>
+    </div>
+
+
+    <div class="hidden" id="previousAftalerPatient">
+
+        <h1>Tidligere konsultationer</h1>
+        <hr>
+        <div class="aftaleListContainer" id="aftaleListContainer">
+        <div id="aftalePatientTable"></div>
+            </div>
+        <button class="button" type="Submit" onclick="changeVisibility('konsultationContainer', 'previousAftalerPatient')" id="goBack">Gå tilbage</button>
+    </div>
+
+
+    <div class="hidden" id="showAftaleDiv">
+        <h1>Tidligere konsultationer</h1>
+        <hr>
+        <div style="display: flex;, column-gap: 50px; max-width: 300px; width:100%; justify-content: space-between;">
+        <label>Dato: <div id="datefelt" class="fields"></div></label><br>
+        <label>Varighed: <div id="durationfelt" class="fields"></div></label>
+        </div><br>
+        <label>Behandler:  <div id="workerusernamefelt" class="fields"></div></label><br>
+
+        <label>Kommentar:  <textarea id="commentfelt" class="comment" readonly></textarea></label><br>
+        <button class="button" type="Submit" onclick="changeVisibility('previousAftalerPatient', 'showAftaleDiv')">
+            Gå tilbage
+        </button>
+    </div>
+
+
+
+    <div class="hidden" id="opretAftale">
+
+        <div class="container">
+            <form class="form" id="aftaleForm">
+                <h1>Anmod om ny konsultation</h1>
+                <hr>
+                <div id="containerReq">
+                <br>
+                <div id="wrapper">
+                    <div id="secondColumn">
+                <label>
+                    Vælg dato:<br>
+                </label>
+
+                <input type="date" name="datetime" required>
+                    </div>
+                <div id="firstColumn">
+                <label>Vælg tidspunkt:</label><br>
+                <select name="timeOfDay" id="timeOfDay">
+                    <option value="formiddag">Formiddag</option>
+                    <option value="eftermiddag">Eftermiddag</option>
+
+                </select>
+                </div>
+
+                </div>
+
+                <br>
+                <label>Behandler:<br></label>
+                <select name="workerusername" id="personnel">
+                    <option value="hema1526">Læge: Henning Madsen</option>
+                    <option value="chha4859">Sygeplejerske: Christina Hansen</option>
+                    <option value="testdoctor">testdoctor: Test Doctor</option>
+
+                </select><br><br>
+
+                <label>Årsag til konsultation:</label>
+                <textarea type="text" class="subject" name="comment" autofocus
+                          placeholder="Venligst skriv årsagen til konsultationen her."></textarea>
+                <br>
+                </div>
+            </form>
+
+
+            <button class="button" type="Submit" onclick="requestAftale()" style="margin: 13px;">Anmod konsultation</button>
+            <button class="button" type="Submit" onclick="changeVisibility('konsultationContainer', 'opretAftale')" >
+                Gå tilbage
+            </button>
+
+            </p>
+            <div class="success-message" id="successcode2"></div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+<style src="appointment.css"></style>
+<style src="style_home.css"></style>
+</html>
