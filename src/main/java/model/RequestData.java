@@ -1,7 +1,5 @@
 package model;
 
-import java.sql.Timestamp;
-
 public class RequestData {
 
     private String cpr;
@@ -9,7 +7,7 @@ public class RequestData {
 
     private String timeOfDay;
 
-    private String comment;
+    private String note;
 
     private String workerusername;
 
@@ -39,12 +37,12 @@ public class RequestData {
         this.timeOfDay = timeOfDay;
     }
 
-    public String getComment() {
-        return comment;
+    public String getNote() {
+        return note;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public String getWorkerusername() {

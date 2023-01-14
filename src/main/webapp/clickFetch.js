@@ -211,18 +211,28 @@ async function fetchAftalerPatient(){
 
     else{
         changeVisibility('previousAftalerPatient', 'konsultationContainer');
-        document.getElementById("aftalePatientTable").innerHTML = "";
+        document.getElementById("previousAftalerPatientTable").innerHTML = "";
 
         console.log(obj);
         const obj2 = obj;
-        obj2.forEach(o => delete o.comment);
+        obj2.forEach(o => delete o.note);
         obj2.forEach(o => delete o.cpr);
         obj2.forEach(o => o.duration = secondsToHms(o.duration));
 
-        console.log(obj2);
+        var futureListObject = new Object;
+        var pastListObject = new Object;
 
-        let myTable = document.querySelector('#aftalePatientTable');
+        var currentDate = new Date().toISOString();
+        var currentTime = currentDate.toLocaleString('da-DK', {timeZone: 'Europe/Copenhagen'});
 
+        futureListObject = obj2.filter(obj2 => new Date(obj2.datetime) > new Date(currentTime));
+        pastListObject = obj2.filter(obj2 => new Date(obj2.datetime) < new Date(currentTime));
+
+        console.log(futureListObject);
+        console.log(pastListObject);
+
+        // Print table for future consultations
+        let myTable = document.querySelector('#comingAftalerPatientTable');
         let headers = ['Behandler', 'Startdato', 'Varighed', 'Gå til'];
 
         let table = document.createElement('table');
@@ -237,7 +247,7 @@ async function fetchAftalerPatient(){
 
         table.appendChild(headerRow);
 
-        obj2.forEach(objekt => {
+        futureListObject.forEach(objekt => {
             let row = document.createElement('tr');
             Object.values(objekt).forEach(text => {
                 let cell = document.createElement('td');
@@ -248,7 +258,7 @@ async function fetchAftalerPatient(){
 
             })
             let btn = document.createElement('button');
-            btn.classList.add("button_select")
+            btn.classList.add("button")
             btn.innerHTML = "Vælg aftale";
             btn.onclick = function () {
                // sessionStorage.setItem("aftaleID", 1); // Unique aftaleID here!
@@ -257,15 +267,98 @@ async function fetchAftalerPatient(){
                // changeVisibility("visAftale", "aftaleListContainer");
 
             };
+            let buttondiv = "btn" + objekt.aftaleid;
+            let btn3 = document.createElement('button');
+            btn3.classList.add("button_select")
+            btn3.innerHTML = "Aflys aftale";
+            btn3.setAttribute("id", buttondiv);
+            btn3.onclick = function () {
+                document.getElementById(buttondiv).classList.add("button_warning")
+                document.getElementById(buttondiv).innerHTML = "Tryk igen for at bekræfte";
+                document.getElementById(buttondiv).onclick = function(){
+                    deleteAftale(objekt.aftaleid);
+                    loadHTML('sitecontent','aftaler_patient.html');
+                    fetchAftalerPatient('previousAftalerPatient');
+                    console.log("Bekræftet!");
+                }
+                console.log("Sletter aftale.....");
+               // document.location.reload(true)
+
+
+            };
             row.appendChild(btn);
+            row.appendChild(btn3);
             table.appendChild(row);
 
         });
 
         myTable.appendChild(table);
 
+// Print table for previous consultations
+        let myTable2 = document.querySelector('#previousAftalerPatientTable');
+        let headers2 = ['Behandler', 'Startdato', 'Varighed', 'Gå til'];
+
+        let table2 = document.createElement('table');
+        table2.classList.add("table1");
+        let headerRow2 = document.createElement('tr');
+        headers2.forEach(headerText2 => {
+            let header2 = document.createElement('th');
+            let textNode2 = document.createTextNode(headerText2);
+            header2.appendChild(textNode2);
+            headerRow2.appendChild(header2);
+        });
+
+        table2.appendChild(headerRow2);
+
+        pastListObject.forEach(objekt => {
+            let row2 = document.createElement('tr');
+            Object.values(objekt).forEach(text2 => {
+                let cell2 = document.createElement('td');
+                let textNode2 = document.createTextNode(text2);
+                cell2.appendChild(textNode2);
+                row2.appendChild(cell2);
+
+
+            })
+            let btn2 = document.createElement('button');
+            btn2.classList.add("button")
+            btn2.innerHTML = "Vælg aftale";
+            btn2.onclick = function () {
+                // sessionStorage.setItem("aftaleID", 1); // Unique aftaleID here!
+                console.log("Aftale ID:" + objekt.aftaleid);
+                fetchSingleAftale(objekt.aftaleid, 'showPatientAftaleDiv');
+                // changeVisibility("visAftale", "aftaleListContainer");
+
+            };
+            row2.appendChild(btn2);
+            table2.appendChild(row2);
+
+        });
+
+        myTable2.appendChild(table2);
+    }
+}
+//*******************************************************************************************************************//
+// API fetch all consultations from a chosen CPR //
+//*******************************************************************************************************************//
+async function deleteAftale(aftaleid){
+    let bearer = "Bearer " + localStorage.getItem("token")
+    const res = await fetch("api/aftale/delete/"+ aftaleid, {
+        method: "DELETE",
+        headers: {
+            'Authorization' : bearer,
+        }
+    })
+    console.log(res)
+    console.log(res.status);
+    if(res.status != 201){
+        console.log("Issue deleting..")
+
+    }else{
+        console.log("Aftale deleted!")
 
     }
+
 }
 //*******************************************************************************************************************//
 // API fetch single consultation from a chosen aftaleID//
@@ -294,14 +387,14 @@ async function fetchSingleAftale(aftaleID, div){
             document.getElementById("datefelt").innerHTML = obj.datetime;
             document.getElementById("durationfelt").innerHTML = obj.duration;
             document.getElementById("workerusernamefelt").innerHTML = obj.workerusername;
-            document.getElementById("commentfelt").innerHTML = obj.comment;
+            document.getElementById("commentfelt").innerHTML = obj.note;
         }else{
             changeVisibility(div, "previousAftalerWorker");
             document.getElementById("datefelt2").innerHTML = obj.datetime;
             document.getElementById("durationfelt2").innerHTML = obj.duration;
             document.getElementById("workerusernamefelt2").innerHTML = obj.workerusername;
             document.getElementById("patientfelt2").innerHTML = obj.cpr;
-            document.getElementById("commentfelt2").innerHTML = obj.comment;
+            document.getElementById("commentfelt2").innerHTML = obj.note;
 
         }
 
@@ -337,7 +430,7 @@ async function fetchAftalerWorker(){
         document.getElementById("errorfelt3").innerHTML = "";
         console.log(obj);
         const obj2 = obj;
-        obj2.forEach(o => delete o.comment);
+        obj2.forEach(o => delete o.note);
         obj2.forEach(o => delete o.workerusername);
         obj2.forEach(o => o.duration = secondsToHms(o.duration));
 
@@ -417,7 +510,7 @@ async function requestAftale(){
     }
 }
 //*******************************************************************************************************************//
-// API post consultation to DB//
+// API post consultation from req to DB//
 //*******************************************************************************************************************//
 async function createAftaleFromReq(){
     let aftaleReqForm = document.getElementById("aftaleReqForm");
@@ -425,6 +518,7 @@ async function createAftaleFromReq(){
     const object = Object.fromEntries(formData);
     console.log(object);
     object.datetime = object.datetime.substring(0, object.datetime.indexOf("T"))+ "T"+ object.time + ":00Z";
+    object.duration = (Number(object.duration) * 60).toString();
     delete object['time'];
 
     console.log("createaftaleform req obj " + object.datetime);
@@ -440,7 +534,35 @@ async function createAftaleFromReq(){
     })
 
     if(res.status === 201) {
-        document.getElementById("successcode4").innerHTML = "Du har nu oprettet en aftale fra anmodning.";
+        document.getElementById("succescode_req").innerHTML = "Du har nu oprettet en aftale fra anmodning.";
+    }
+}
+//*******************************************************************************************************************//
+// API post consultation to DB//
+//*******************************************************************************************************************//
+async function createAftale(){
+    let createAftaleForm = document.getElementById("createAftaleForm");
+    const formData = new FormData(createAftaleForm);
+    const object = Object.fromEntries(formData);
+    console.log(object);
+    object.datetime = object.datetime + "T"+ object.time + ":00Z";
+    object.duration = (Number(object.duration) * 60).toString();
+    delete object['time'];
+
+    console.log("createaftaleform req obj " + object.datetime);
+
+    let bearer = "Bearer " + localStorage.getItem("token")
+    const res = await fetch("api/aftale/create", {
+        method: "POST",
+        body: JSON.stringify(object),
+        headers: {
+            "content-type": "application/json",
+            'Authorization' : bearer
+        }
+    })
+
+    if(res.status === 201) {
+        document.getElementById("succescode_req").innerHTML = "Du har nu oprettet en aftale fra anmodning.";
     }
 }
 //*******************************************************************************************************************//
@@ -520,7 +642,7 @@ async function fetchRequests(){
         console.log(obj);
         const obj2 = obj;
         obj2.forEach(o => delete o.workerusername);
-        obj2.forEach(o => o.comment = o.comment.substring(0,25) + "...");
+        obj2.forEach(o => o.note = o.note.substring(0,25) + "...");
 
         console.log(obj2);
 
@@ -595,7 +717,7 @@ async function fetchSingleRequest(aftaleID){
         document.getElementById("datefeltreq").value = obj.datetime;
         document.getElementById("timeofdayfeltreq").value = obj.timeOfDay;
         document.getElementById("workerusernamefeltreq").value = obj.workerusername;
-        document.getElementById("commentfeltreq").innerHTML = obj.comment;
+        document.getElementById("commentfeltreq").innerHTML = obj.note;
         document.getElementById("patientfeltreq").value = obj.cpr;
         document.getElementById("aftaleidfelt").value = obj.aftaleid;
 

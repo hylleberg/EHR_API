@@ -15,10 +15,9 @@
     <div class="container" id="konsultationContainer">
         <h1>Konsultationer</h1>
         <hr>
-        <br>
         <div style="display: flex; align-items: center; column-gap: 20px; max-width: 400px; width:100%; justify-content: space-between;">
         <button class="button" type="Submit" onclick="fetchAftalerPatient('previousAftalerPatient')" id="hentAftalerPatientButton">Se dine
-            tidligere konsultationer
+            konsultationer
         </button>
         <button class="button" type="Submit"
                 onclick="changeVisibility('opretAftale', 'konsultationContainer')" id="createAftaleButton">Anmod ny
@@ -31,10 +30,14 @@
 
     <div class="hidden" id="previousAftalerPatient">
 
-        <h1>Tidligere konsultationer</h1>
+        <h1>Konsultationer</h1>
         <hr>
         <div class="aftaleListContainer" id="aftaleListContainer">
-        <div id="aftalePatientTable"></div>
+            <h3>Fremtidige aftaler</h3>
+            <div id="comingAftalerPatientTable"></div>
+
+            <h3>Tidligere aftaler</h3>
+            <div id="previousAftalerPatientTable"></div>
             </div>
         <button class="button" type="Submit" onclick="changeVisibility('konsultationContainer', 'previousAftalerPatient')" id="goBack">Gå tilbage</button>
     </div>
@@ -94,7 +97,7 @@
                 </select><br><br>
 
                 <label>Årsag til konsultation:</label>
-                <textarea type="text" class="subject" name="comment" autofocus
+                <textarea type="text" class="subject" name="note" autofocus
                           placeholder="Venligst skriv årsagen til konsultationen her."></textarea>
                 <br>
                 </div>
@@ -115,6 +118,8 @@
 </div>
 
 </div>
+
+
 </body>
 <style src="appointment.css"></style>
 <style src="style_home.css"></style>

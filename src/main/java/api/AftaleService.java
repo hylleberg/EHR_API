@@ -6,6 +6,7 @@ import filters.Secured;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import model.AftaleData;
 import model.Role;
 
 
@@ -31,6 +32,17 @@ public class AftaleService {
 
     }
 
+    @Secured({Role.doctor})
+    @Path("/create")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createAftale(AftaleData aftaledata) {
+        System.out.println("Create aftale service activated");
+        dc.saveAftaleToDB(aftaledata);
+
+        return Response.status(Response.Status.CREATED).build();
+    }
     @Secured({Role.doctor, Role.patient})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -39,6 +51,17 @@ public class AftaleService {
 
 
             return dc.fetchAftaleDB(aftaleid);
+
+
+    }
+    @Secured({Role.doctor, Role.patient})
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/delete/{aftaleid}")
+    public Response deleteAftale(@PathParam("aftaleid") int aftaleid) {
+
+
+        return dc.deleteAftaleDB(aftaleid);
 
 
     }

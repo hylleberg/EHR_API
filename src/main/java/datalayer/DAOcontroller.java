@@ -154,7 +154,7 @@ public class DAOcontroller {
                 aftaledata.setWorkerusername(resultSet.getString("workerusername"));
                 aftaledata.setDatetime(resultSet.getString("starttime"));
                 aftaledata.setDuration(resultSet.getInt("duration"));
-                aftaledata.setComment(resultSet.getString("note"));
+                aftaledata.setNote(resultSet.getString("note"));
                 aftaledata.setAftaleid(resultSet.getInt("id"));
 
                 aftaler.add(aftaledata);
@@ -190,7 +190,7 @@ public class DAOcontroller {
                 aftaledata.setCpr(resultSet.getString("cpr"));
                 aftaledata.setDatetime(resultSet.getString("starttime"));
                 aftaledata.setDuration(resultSet.getInt("duration"));
-                aftaledata.setComment(resultSet.getString("note"));
+                aftaledata.setNote(resultSet.getString("note"));
                 aftaledata.setAftaleid(resultSet.getInt("id"));
 
                 System.out.println("Aftale tilføjet til objekt (fetchAftaleDB)");
@@ -228,7 +228,7 @@ public class DAOcontroller {
                 aftaledata.setCpr(resultSet.getString("cpr"));
                 aftaledata.setDatetime(resultSet.getString("starttime"));
                 aftaledata.setDuration(resultSet.getInt("duration"));
-                aftaledata.setComment(resultSet.getString("note"));
+                aftaledata.setNote(resultSet.getString("note"));
                 aftaledata.setAftaleid((resultSet.getInt("id")));
                 aftaledata.setWorkerusername((resultSet.getString("workerusername")));
 
@@ -258,10 +258,10 @@ public class DAOcontroller {
 
             //Insert request consultation
             Connection con = sqlcon.getConnection();
-            PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `s112786`.`reqconsultation` (startTime, timeOfDay,comment,workerusername,cpr) VALUES (?, ?, ?, ?, ?)");
+            PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `s112786`.`reqconsultation` (startTime, timeOfDay,note,workerusername,cpr) VALUES (?, ?, ?, ?, ?)");
             preparedStatement.setString(1, requestdata.getDatetime());
             preparedStatement.setString(2, requestdata.getTimeOfDay());
-            preparedStatement.setString(3, requestdata.getComment());
+            preparedStatement.setString(3, requestdata.getNote());
             preparedStatement.setString(4, requestdata.getWorkerusername());
             preparedStatement.setString(5, requestdata.getCpr());
 
@@ -293,20 +293,23 @@ public class DAOcontroller {
 
             //Insert request consultation
             Connection con = sqlcon.getConnection();
-            PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `s112786`.`consultation` (startTime,note,workerusername,cpr) VALUES (?, ?, ?, ?)");
+            PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `s112786`.`consultation` (startTime,note, duration, workerusername,cpr) VALUES (?, ?, ?, ?, ?)");
             preparedStatement.setString(1, aftaledata.getDatetime());
-            preparedStatement.setString(2, aftaledata.getComment());
-            preparedStatement.setString(3, aftaledata.getWorkerusername());
-            preparedStatement.setString(4, aftaledata.getCpr());
+            preparedStatement.setString(2, aftaledata.getNote());
+            preparedStatement.setInt(3, aftaledata.getDuration());
+            preparedStatement.setString(4, aftaledata.getWorkerusername());
+            preparedStatement.setString(5, aftaledata.getCpr());
 
             preparedStatement.executeUpdate();
 
             // Delete request
-            preparedStatement = con.prepareStatement("DELETE FROM `s112786`.`reqconsultation` where id = ?");
-            preparedStatement.setInt(1, aftaledata.getAftaleid());
+            if(aftaledata.getAftaleid() > 0) {
+                preparedStatement = con.prepareStatement("DELETE FROM `s112786`.`reqconsultation` where id = ?");
+                preparedStatement.setInt(1, aftaledata.getAftaleid());
 
 
-            preparedStatement.executeUpdate();
+                preparedStatement.executeUpdate();
+            }
         }catch(Exception e){
             System.out.println("Der skete en fejl ved forsøg på at gemme aftale.");
 
@@ -365,7 +368,7 @@ public class DAOcontroller {
 
                 requestdata.setDatetime(resultSet.getString("startTime"));
                 requestdata.setTimeOfDay(resultSet.getString("timeOfDay"));
-                requestdata.setComment(resultSet.getString("comment"));
+                requestdata.setNote(resultSet.getString("note"));
                 requestdata.setCpr(resultSet.getString("cpr"));
                 requestdata.setAftaleid(resultSet.getInt("id"));
 
@@ -402,7 +405,7 @@ public class DAOcontroller {
             while (resultSet.next()) {
                 requestdata.setDatetime(resultSet.getString("startTime"));
                 requestdata.setTimeOfDay(resultSet.getString("timeOfDay"));
-                requestdata.setComment(resultSet.getString("comment"));
+                requestdata.setNote(resultSet.getString("note"));
                 requestdata.setWorkerusername(resultSet.getString("workerusername"));
                 requestdata.setAftaleid(resultSet.getInt("id"));
                 requestdata.setCpr(resultSet.getString("cpr"));
@@ -421,10 +424,36 @@ public class DAOcontroller {
             try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
             try { con.close(); } catch (Exception e) { /* Ignored */ }
         }
-        System.out.println("Intet aftale med dette ID fundet.");
+        System.out.println("Ingen aftale med dette ID fundet.");
 
         throw new DataNotFoundException("Intet aftale med dette ID fundet.");
     }
+
+    public Response deleteAftaleDB(int aftaleid){
+
+        try {
+
+            Connection con = sqlcon.getConnection();
+
+            // Delete aftale
+            preparedStatement = con.prepareStatement("DELETE FROM `s112786`.`consultation` where id = ?");
+            preparedStatement.setInt(1, aftaleid);
+
+            preparedStatement.executeUpdate();
+
+            return Response.status(Response.Status.CREATED).build();
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println("Der skete en fejl ved forsøg på at slette aftale.");
+
+            throw new DataNotFoundException("Der skete en fejl ved forsøg på at slette aftale.");
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
+        }
+    }
+
 
 }
 

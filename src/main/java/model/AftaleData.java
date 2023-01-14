@@ -6,7 +6,7 @@ public class AftaleData {
     private String cpr;
     private String datetime;
     private int duration;
-    private String comment;
+    private String note;
 
     private int aftaleid;
 
@@ -52,12 +52,12 @@ public class AftaleData {
         this.duration = duration;
     }
 
-    public String getComment() {
-        return comment;
+    public String getNote() {
+        return note;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setNote(String note) {
+        this.note = note;
     }
 
 

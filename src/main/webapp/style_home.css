@@ -227,7 +227,7 @@ div.fields{
 }
 
 .button_select{
-    height: 30px;
+    height: 40px;
     width: 200px;
 
     font-weight: bold;
@@ -239,6 +239,25 @@ div.fields{
     outline: none;
     cursor: pointer;
     background: #ffffff;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.button_warning{
+    height: 40px;
+    width: 200px;
+
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: white;
+    border-radius: var(--border-radius);
+    border-color: black;
+    border-width: 1px;
+    outline: none;
+    cursor: pointer;
+    background: red;
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
@@ -289,7 +308,7 @@ hr.style-one {
 .aftaleListContainer{
 
     height:500px;
-    width:900px;
+    width:1050px;
     overflow:auto;
     padding:2%;
 
@@ -315,6 +334,8 @@ hr.style-one {
     visibility: hidden;
     opacity: 0;
 }
+
+
 .overlay:target {
     visibility: visible;
     opacity: 1;
@@ -374,8 +395,8 @@ hr.style-one {
     border-width: thin;
     margin: 25px 0;
     font-size: 1em;
-    font-family: sans-serif;
-    width: 100%;
+
+
 }
 
 .table1 th,

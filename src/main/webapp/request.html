@@ -17,7 +17,7 @@
         <h1>Opret aftale fra anmodning</h1>
         <hr>
         <form class="form" id="aftaleReqForm">
-        <div style="display: flex;, column-gap: 50px; max-width: 600px; width:100%; justify-content: space-between;">
+        <div style="display: flex;, column-gap: 50px; max-width: 800px; width:100%; justify-content: space-between;">
             <label>Dato: <div class="fields">
                 <input  id="datefeltreq" name="datetime" readonly>
 
@@ -27,6 +27,7 @@
 
             </div></label>
             <label>Vælg tidspunkt:<input type="time" name="time" required></label>
+            <label>Varighed (minutter): <input name="duration"></label>
         </div><br>
         <label>Ønsket behandler:  <div  class="fields" >
             <input  id="workerusernamefeltreq" name="workerusername"readonly>
@@ -37,11 +38,11 @@
 
         </div></label><br>
         <input id="aftaleidfelt" name="aftaleid" class="hidden">
-        <label>Årsag til konsultation:  <textarea id="commentfeltreq" class="comment" name="comment" readonly></textarea></label><br>
+        <label>Årsag til konsultation:  <textarea id="commentfeltreq" class="comment" name="note" readonly></textarea></label><br>
         </form>
         <button class="button" type="Submit" onclick="createAftaleFromReq()" >Opret aftale</button>
         <button class="button" type="Submit" onclick="changeVisibility('requestListContainer', 'requestSingleContainer')" >Gå tilbage</button>
-        <div id="succescode4"></div>
+        <div class="success-message" id="succescode_req"></div>
     </div><br>
     <button class="button" type="Submit" onclick='loadAftaler()'>Gå til konsultationer</button>
 

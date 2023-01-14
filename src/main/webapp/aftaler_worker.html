@@ -20,9 +20,8 @@
     </button>
       <button class="button" type="Submit" onclick="loadHTML('sitecontent','request.html'); fetchRequests();">Konsultations anmodninger
       </button>
-      <button class="button" type="Submit" onclick="createAftale();">Opret ny konsultation
+      <button class="button" type="Submit" onclick="changeVisibility('createAftaleContainer', 'konsultationContainer');">Opret ny konsultation
       </button>
-
 
       </div>
 
@@ -43,7 +42,8 @@
     <h1>Konsultationsliste for patient</h1>
     <hr>
     <div class="aftaleListContainer" id="aftaleListContainer2">
-      <div id="aftalePatientTable"></div>
+      <div id="comingAftalerPatientTable"></div>
+      <div id="previousAftalerPatientTable"></div>
 
     </div>
     <button class="button" type="Submit" onclick="changeVisibility('konsultationContainer', 'previousAftalerPatient');
@@ -77,10 +77,69 @@
     </div><br>
 
   <br>
-    <label>Kommentar:  <textarea id="commentfelt2" class="comment" readonly></textarea></label><br>
+    <label>Kommentar:  <textarea id="commentfelt2" class="note" readonly></textarea></label><br>
     <button class="button" type="Submit" onclick="changeVisibility('previousAftalerWorker', 'showWorkerAftaleDiv')">
       Gå tilbage
     </button>
+  </div>
+
+  <div class="hidden" id="createAftaleContainer">
+
+    <div class="container">
+      <form class="form" id="createAftaleForm">
+        <h1>Opret ny konsultation</h1>
+        <hr>
+        <div id="containerCreateAftale">
+          <br>
+          <div id="wrapper">
+            <div id="secondColumn">
+              <label>
+                Vælg dato:<br>
+              </label>
+
+              <input type="date" name="datetime" required>
+
+              <label>Vælg tidspunkt:<input type="time" name="time" required></label>
+            </div>
+            <div id="firstColumn">
+              <label>Varighed: <input name="duration"></label>
+            </div>
+
+          </div>
+
+          <br>
+          <label>Behandler:<br></label>
+          <select name="workerusername" id="personnel">
+            <option value="hema1526">Læge: Henning Madsen</option>
+            <option value="chha4859">Sygeplejerske: Christina Hansen</option>
+            <option value="testdoctor">testdoctor: Test Doctor</option>
+
+          </select><br><br>
+          <label>Patient:<br></label>
+          <select name="cpr" >
+            <option value="010101-0101">Wolff Parkinson-White</option>
+            <option value="123456-7899">Nicolas Cage</option>
+
+
+          </select>
+
+          <label>Kommentar:</label>
+          <textarea type="text" class="subject" name="note" autofocus
+                    placeholder=""></textarea>
+          <br>
+        </div>
+      </form>
+
+
+      <button class="button" type="Submit" onclick="createAftale()" style="margin: 13px;">Opret konsultation</button>
+      <button class="button" type="Submit" onclick="changeVisibility('konsultationContainer', 'createAftaleContainer')" >
+        Gå tilbage
+      </button>
+
+      </p>
+      <div class="success-message" id="successcode2"></div>
+    </div>
+
   </div>
 
 
