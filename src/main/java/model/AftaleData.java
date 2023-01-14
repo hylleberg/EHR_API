@@ -1,24 +1,22 @@
 package model;
 
-import java.sql.Timestamp;
-
 public class AftaleData {
 
     private String workerusername;
     private String cpr;
     private String datetime;
     private int duration;
-    private String note;
+    private String comment;
 
-    private int id;
+    private int aftaleid;
 
 
-    public int getId() {
-        return id;
+    public int getAftaleid() {
+        return aftaleid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setAftaleid(int aftaleid) {
+        this.aftaleid = aftaleid;
     }
 
     public String getCpr() {
@@ -43,9 +41,7 @@ public class AftaleData {
 
     public void setDatetime(String datetime) {
 
-        String tempDatetime = datetime.replace(" ", "T");
-        String returnDatetime = tempDatetime + "Z";
-        this.datetime = returnDatetime;
+        this.datetime = datetime;
     }
 
     public int getDuration() {
@@ -56,12 +52,12 @@ public class AftaleData {
         this.duration = duration;
     }
 
-    public String getNote() {
-        return note;
+    public String getComment() {
+        return comment;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
 

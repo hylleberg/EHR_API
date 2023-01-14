@@ -10,9 +10,9 @@
 </head>
 <body onload="">
 
-<div class="" id="aftaleMain">
-
-    <div class ="container" id="konsultationContainer" >
+<div class="content" id="aftaleMain">
+    <div class="contentdiv">
+    <div class="container" id="konsultationContainer">
         <h1>Konsultationer</h1>
         <hr>
         <br>
@@ -40,7 +40,7 @@
     </div>
 
 
-    <div class="hidden" id="showAftaleDiv">
+    <div class="hidden" id="showPatientAftaleDiv">
         <h1>Tidligere konsultationer</h1>
         <hr>
         <div style="display: flex;, column-gap: 50px; max-width: 300px; width:100%; justify-content: space-between;">
@@ -50,7 +50,7 @@
         <label>Behandler:  <div id="workerusernamefelt" class="fields"></div></label><br>
 
         <label>Kommentar:  <textarea id="commentfelt" class="comment" readonly></textarea></label><br>
-        <button class="button" type="Submit" onclick="changeVisibility('previousAftalerPatient', 'showAftaleDiv')">
+        <button class="button" type="Submit" onclick="changeVisibility('previousAftalerPatient', 'showPatientAftaleDiv')">
             Gå tilbage
         </button>
     </div>
@@ -111,6 +111,8 @@
         </div>
 
     </div>
+
+</div>
 
 </div>
 </body>

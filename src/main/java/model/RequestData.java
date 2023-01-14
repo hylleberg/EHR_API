@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 public class RequestData {
 
+    private String cpr;
     private String datetime;
 
     private String timeOfDay;
@@ -12,7 +13,15 @@ public class RequestData {
 
     private String workerusername;
 
-    private String cpr;
+    private int aftaleid;
+
+    public int getAftaleid() {
+        return aftaleid;
+    }
+
+    public void setAftaleid(int aftaleid) {
+        this.aftaleid = aftaleid;
+    }
 
     public String getDatetime() {
         return datetime.toString();

@@ -6,10 +6,8 @@ import filters.Secured;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import model.AftaleData;
-import model.PatientData;
 import model.Role;
-import model.WorkerData;
+
 
 
 @Path("/aftale")

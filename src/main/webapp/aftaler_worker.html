@@ -11,13 +11,19 @@
     <h1>Konsultationer</h1>
     <hr>
     <br>
-    <div style="display: flex; align-items: center; column-gap: 20px; max-width: 400px; width:100%; justify-content: space-between;">
+    <div style="display: flex; align-items: center; column-gap: 20px; max-width: 800px; width:100%; justify-content: space-between;">
     <button class="button" type="Submit" onclick="fetchAftalerWorker()" id="hentAftalerWorkerButton">Se
       konsultationsliste for læge
     </button>
     <button class="button" type="Submit" onclick="fetchAftalerPatient()" id="hentAftalerPatientButton">Se
       konsultationsliste for patient
     </button>
+      <button class="button" type="Submit" onclick="loadHTML('sitecontent','request.html'); fetchRequests();">Konsultations anmodninger
+      </button>
+      <button class="button" type="Submit" onclick="createAftale();">Opret ny konsultation
+      </button>
+
+
       </div>
 
   </div>
@@ -44,21 +50,38 @@
       document.getElementById('aftalePatientTable').innerHTML ='';">Gå tilbage</button>
   </div>
 
-  <div class="hidden" id="showAftaleDiv">
-    <h1>Tidligere konsultationer</h1>
+  <div class="hidden" id="showPatientAftaleDiv">
+    <h1>Konsultationsliste for patient</h1>
     <hr>
     <div style="display: flex;, column-gap: 50px; max-width: 300px; width:100%; justify-content: space-between;">
       <label>Dato: <div id="datefelt" class="fields"></div></label><br>
       <label>Varighed: <div id="durationfelt" class="fields"></div></label>
     </div><br>
     <label>Behandler:  <div id="workerusernamefelt" class="fields"></div></label><br>
-
     <label>Kommentar:  <textarea id="commentfelt" class="comment" readonly></textarea></label><br>
-    <button class="button" type="Submit" onclick="changeVisibility('previousAftalerPatient', 'showAftaleDiv')">
+    <button class="button" type="Submit" onclick="changeVisibility('previousAftalerPatient', 'showPatientAftaleDiv')">
       Gå tilbage
     </button>
   </div>
 
+  <div class="hidden" id="showWorkerAftaleDiv">
+    <h1>Konsultationsliste for læge</h1>
+    <hr>
+    <div style="display: flex;, column-gap: 50px; max-width: 300px; width:100%; justify-content: space-between;">
+      <label>Dato: <div id="datefelt2" class="fields"></div></label><br>
+      <label>Varighed: <div id="durationfelt2" class="fields"></div></label>
+    </div><br>
+    <div style="display: flex;, column-gap: 50px; max-width: 300px; width:100%; justify-content: space-between;">
+      <label>Behandler:  <div id="workerusernamefelt2" class="fields"></div></label>
+      <label>Patient: <div id="patientfelt2" class="fields"></div></label><br></label>
+    </div><br>
+
+  <br>
+    <label>Kommentar:  <textarea id="commentfelt2" class="comment" readonly></textarea></label><br>
+    <button class="button" type="Submit" onclick="changeVisibility('previousAftalerWorker', 'showWorkerAftaleDiv')">
+      Gå tilbage
+    </button>
+  </div>
 
 
 </div>

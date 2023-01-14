@@ -6,7 +6,6 @@ import java.util.List;
 
 import exceptionhandler.DataNotFoundException;
 
-import jakarta.ws.rs.core.Request;
 import jakarta.ws.rs.core.Response;
 import model.AftaleData;
 import model.LoginData;
@@ -15,6 +14,9 @@ import model.RequestData;
 
 public class DAOcontroller {
 
+    Connection con = null;
+    PreparedStatement preparedStatement = null;
+    ResultSet resultSet = null;
     private SqlConnector sqlcon = new SqlConnector();
     private LoginData logindata;
     private PatientData patientdata;
@@ -39,6 +41,10 @@ public class DAOcontroller {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
         }
 
         return null;
@@ -60,6 +66,10 @@ public class DAOcontroller {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
         }
 
     }
@@ -84,6 +94,10 @@ public class DAOcontroller {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
         }
 
         return "";
@@ -113,6 +127,10 @@ public class DAOcontroller {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
         }
         System.out.println("Intet CPR nr fundet.");
 
@@ -136,8 +154,8 @@ public class DAOcontroller {
                 aftaledata.setWorkerusername(resultSet.getString("workerusername"));
                 aftaledata.setDatetime(resultSet.getString("starttime"));
                 aftaledata.setDuration(resultSet.getInt("duration"));
-                aftaledata.setNote(resultSet.getString("note"));
-                aftaledata.setId(resultSet.getInt("id"));
+                aftaledata.setComment(resultSet.getString("note"));
+                aftaledata.setAftaleid(resultSet.getInt("id"));
 
                 aftaler.add(aftaledata);
 
@@ -172,8 +190,8 @@ public class DAOcontroller {
                 aftaledata.setCpr(resultSet.getString("cpr"));
                 aftaledata.setDatetime(resultSet.getString("starttime"));
                 aftaledata.setDuration(resultSet.getInt("duration"));
-                aftaledata.setNote(resultSet.getString("note"));
-                aftaledata.setId(resultSet.getInt("id"));
+                aftaledata.setComment(resultSet.getString("note"));
+                aftaledata.setAftaleid(resultSet.getInt("id"));
 
                 System.out.println("Aftale tilføjet til objekt (fetchAftaleDB)");
 
@@ -184,6 +202,10 @@ public class DAOcontroller {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
         }
         System.out.println("Intet aftale med dette ID fundet.");
 
@@ -206,23 +228,28 @@ public class DAOcontroller {
                 aftaledata.setCpr(resultSet.getString("cpr"));
                 aftaledata.setDatetime(resultSet.getString("starttime"));
                 aftaledata.setDuration(resultSet.getInt("duration"));
-                aftaledata.setNote(resultSet.getString("note"));
+                aftaledata.setComment(resultSet.getString("note"));
+                aftaledata.setAftaleid((resultSet.getInt("id")));
+                aftaledata.setWorkerusername((resultSet.getString("workerusername")));
 
                 aftaler.add(aftaledata);
 
                 System.out.println("Aftale tilføjet til objekt");
-
             }
 
             return Response.status(Response.Status.CREATED).entity(aftaler).build();
 
 
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Intet CPR nr fundet.");
+            System.out.println("Intet CPR nr fundet.");
 
-        throw new DataNotFoundException("Intet CPR nr fundet.");
+            throw new DataNotFoundException("Intet CPR nr fundet.");
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
+        }
+
     }
     public void saveConsultationReqToDB(RequestData requestdata){
         this.requestdata = requestdata;
@@ -231,7 +258,7 @@ public class DAOcontroller {
 
             //Insert request consultation
             Connection con = sqlcon.getConnection();
-            PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `s112786`.`reqConsultation` (startTime, timeOfDay,comment,workerusername,cpr) VALUES (?, ?, ?, ?, ?)");
+            PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `s112786`.`reqconsultation` (startTime, timeOfDay,comment,workerusername,cpr) VALUES (?, ?, ?, ?, ?)");
             preparedStatement.setString(1, requestdata.getDatetime());
             preparedStatement.setString(2, requestdata.getTimeOfDay());
             preparedStatement.setString(3, requestdata.getComment());
@@ -248,19 +275,57 @@ public class DAOcontroller {
 
             preparedStatement.executeUpdate();
         }catch(Exception e){
-            e.printStackTrace();
+            System.out.println("");
 
+            throw new DataNotFoundException("Kunne ikke gemme anmodninger.");
+
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
         }
 
     }
+    public void saveAftaleToDB(AftaleData aftaledata){
+        this.aftaledata = aftaledata;
 
+        try {
+
+            //Insert request consultation
+            Connection con = sqlcon.getConnection();
+            PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `s112786`.`consultation` (startTime,note,workerusername,cpr) VALUES (?, ?, ?, ?)");
+            preparedStatement.setString(1, aftaledata.getDatetime());
+            preparedStatement.setString(2, aftaledata.getComment());
+            preparedStatement.setString(3, aftaledata.getWorkerusername());
+            preparedStatement.setString(4, aftaledata.getCpr());
+
+            preparedStatement.executeUpdate();
+
+            // Delete request
+            preparedStatement = con.prepareStatement("DELETE FROM `s112786`.`reqconsultation` where id = ?");
+            preparedStatement.setInt(1, aftaledata.getAftaleid());
+
+
+            preparedStatement.executeUpdate();
+        }catch(Exception e){
+            System.out.println("Der skete en fejl ved forsøg på at gemme aftale.");
+
+            throw new DataNotFoundException("Der skete en fejl ved forsøg på at gemme aftale.");
+
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
+        }
+
+    }
     public Response fetchFlagDataToWorker(String workerusername){
 
         ArrayList<String> pendingPatient = new ArrayList<String>();
 
         try {
             Connection con = sqlcon.getConnection();
-            PreparedStatement preparedStatement = con.prepareStatement("select cpr from `s112786`.`reqConsultation` where workerusername = ?");
+            PreparedStatement preparedStatement = con.prepareStatement("select cpr from `s112786`.`reqconsultation` where workerusername = ?");
             preparedStatement.setString(1, workerusername);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -276,18 +341,22 @@ public class DAOcontroller {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
         }
         return null;
     }
-    public Response fetchRequestDataToWorker(String workerusername, String cpr){
+    public Response fetchRequestListToWorker(String workerusername){
 
         List<RequestData> requestlist = new ArrayList<RequestData>();
 
         try {
             Connection con = sqlcon.getConnection();
-            PreparedStatement preparedStatement = con.prepareStatement("select * from `s112786`.`reqConsultation` where workerusername = ? AND cpr = ?");
+            PreparedStatement preparedStatement = con.prepareStatement("select * from `s112786`.`reqconsultation` where workerusername = ?");
             preparedStatement.setString(1, workerusername);
-            preparedStatement.setString(2, cpr);
+
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -298,6 +367,7 @@ public class DAOcontroller {
                 requestdata.setTimeOfDay(resultSet.getString("timeOfDay"));
                 requestdata.setComment(resultSet.getString("comment"));
                 requestdata.setCpr(resultSet.getString("cpr"));
+                requestdata.setAftaleid(resultSet.getInt("id"));
 
                 requestlist.add(requestdata);
 
@@ -310,9 +380,50 @@ public class DAOcontroller {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
         }
         System.out.println("Ingen anmodninger til worker.");
         throw new DataNotFoundException("Ingen anmodninger til worker.");
+    }
+    public Response fetchRequestDB(int aftaleid) {
+
+        RequestData requestdata = new RequestData();
+
+        try {
+            Connection con = sqlcon.getConnection();
+            PreparedStatement preparedStatement = con.prepareStatement("select * from `s112786`.`reqconsultation` where id = ?");
+            preparedStatement.setInt(1, aftaleid);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                requestdata.setDatetime(resultSet.getString("startTime"));
+                requestdata.setTimeOfDay(resultSet.getString("timeOfDay"));
+                requestdata.setComment(resultSet.getString("comment"));
+                requestdata.setWorkerusername(resultSet.getString("workerusername"));
+                requestdata.setAftaleid(resultSet.getInt("id"));
+                requestdata.setCpr(resultSet.getString("cpr"));
+
+                System.out.println("request tilføjet til model (fetchRequestDB)");
+
+            }
+
+            return Response.status(Response.Status.CREATED).entity(requestdata).build();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
+        }
+        System.out.println("Intet aftale med dette ID fundet.");
+
+        throw new DataNotFoundException("Intet aftale med dette ID fundet.");
     }
 
 }

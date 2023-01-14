@@ -21,8 +21,8 @@ public class AppConfig extends Application {
         classes.add(PatientService.class);
         classes.add(AftaleService.class);
         classes.add(AuthFilter.class);
-        classes.add(CreateRequestService.class);
-        classes.add(FlagService.class);
+        classes.add(RequestService.class);
+      //  classes.add(FlagService.class);
 
         //Exception mappers
         classes.add(DataNotFoundExceptionMapper.class);

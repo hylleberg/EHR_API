@@ -1,12 +1,38 @@
 // Persist data on accidental refreshs //
 //*******************************************************************************************************************//
 console.log("script running")
-if (sessionStorage.getItem("cpr") || sessionStorage.getItem("firstname") || sessionStorage.getItem("lastname")) {
+if (sessionStorage.getItem("cpr") && sessionStorage.getItem("firstname") && sessionStorage.getItem("lastname") && (sessionStorage.getItem("role") === "?doctor?")) {
     // Restore the contents of the text field
     console.log("Restoring")
-//    document.getElementById("navnfelt_sidebar").innerHTML = sessionStorage.getItem("firstname") +" "+sessionStorage.getItem("lastname");
- //   document.getElementById("cprfelt_sidebar").innerHTML = sessionStorage.getItem("cpr");
+    document.getElementById("navnfelt_sidebar").innerHTML = sessionStorage.getItem("firstname") + " " + sessionStorage.getItem("lastname");
+    document.getElementById("cprfelt_sidebar").innerHTML = sessionStorage.getItem("cpr");
+    document.getElementById("addfelt_sidebar").innerHTML = sessionStorage.getItem("address")
+    document.getElementById("cityfelt_sidebar").innerHTML = sessionStorage.getItem("city")
 
+    var button2 = document.createElement("button");
+    button2.innerHTML = "Vælg ny patient.";
+    button2.setAttribute('type', 'button');
+    button2.classList.add('button');
+    button2.onclick = function() {
+
+        changeVisibility("findPatientDiv", "showPatientDiv");
+        sessionStorage.setItem("firstname", "");
+        sessionStorage.setItem("lastname", "");
+        sessionStorage.setItem("cpr", "");
+        document.getElementById("navnfelt_sidebar").innerHTML = "";
+        document.getElementById("cprfelt_sidebar").innerHTML = "";
+        document.getElementById("addfelt_sidebar").innerHTML = "";
+        document.getElementById("navnfelt").innerHTML = "";
+        document.getElementById("cprfelt").innerHTML = "";
+        document.getElementById("chooseButton").innerHTML = "";
+
+
+
+    };
+    var divButton2 = document.getElementById("chooseNewPatientButton")
+    divButton2.innerHTML = "";
+    divButton2.appendChild(button2);
+    changeVisibility("showPatientDiv", "findPatientDiv");
 }
 
 function clearSession(){
@@ -108,6 +134,8 @@ async function fetchCPR() {
         button.onclick = function(){
             sessionStorage.setItem("firstname", obj.firstname);
             sessionStorage.setItem("lastname", obj.lastname);
+            sessionStorage.setItem("address", obj.address);
+            sessionStorage.setItem("city", obj.city);
             sessionStorage.setItem("cpr", obj.cpr);
             document.getElementById("navnfelt_sidebar").innerHTML = obj.firstname + " " + obj.lastname;
             document.getElementById("cprfelt_sidebar").innerHTML = obj.cpr;
@@ -161,7 +189,6 @@ function changeVisibility(showDiv, hideDiv){
 
 }
 //*******************************************************************************************************************//
-
 // API fetch all consultations from a chosen CPR //
 //*******************************************************************************************************************//
 async function fetchAftalerPatient(){
@@ -188,9 +215,8 @@ async function fetchAftalerPatient(){
 
         console.log(obj);
         const obj2 = obj;
-        obj2.forEach(o => delete o.note);
+        obj2.forEach(o => delete o.comment);
         obj2.forEach(o => delete o.cpr);
-       // obj2.forEach(o => delete o.id);
         obj2.forEach(o => o.duration = secondsToHms(o.duration));
 
         console.log(obj2);
@@ -226,8 +252,8 @@ async function fetchAftalerPatient(){
             btn.innerHTML = "Vælg aftale";
             btn.onclick = function () {
                // sessionStorage.setItem("aftaleID", 1); // Unique aftaleID here!
-                console.log("Aftale ID:" + objekt.id);
-                fetchSingleAftale(objekt.id);
+                console.log("Aftale ID:" + objekt.aftaleid);
+                fetchSingleAftale(objekt.aftaleid, 'showPatientAftaleDiv');
                // changeVisibility("visAftale", "aftaleListContainer");
 
             };
@@ -241,10 +267,10 @@ async function fetchAftalerPatient(){
 
     }
 }
-
 //*******************************************************************************************************************//
-
-async function fetchSingleAftale(aftaleID){
+// API fetch single consultation from a chosen aftaleID//
+//*******************************************************************************************************************//
+async function fetchSingleAftale(aftaleID, div){
     let bearer = "Bearer " + localStorage.getItem("token")
     const res = await fetch("api/aftale/" + aftaleID, {
         method: "GET",
@@ -262,11 +288,26 @@ async function fetchSingleAftale(aftaleID){
 
         console.log(obj);
         console.log("Hurra!");
-        changeVisibility("showAftaleDiv", "previousAftalerPatient");
-        document.getElementById("datefelt").innerHTML = obj.datetime;
-        document.getElementById("durationfelt").innerHTML = obj.duration;
-        document.getElementById("workerusernamefelt").innerHTML = obj.workerusername;
-        document.getElementById("commentfelt").innerHTML = obj.note;
+
+        if(div == "showPatientAftaleDiv"){
+            changeVisibility(div, "previousAftalerPatient");
+            document.getElementById("datefelt").innerHTML = obj.datetime;
+            document.getElementById("durationfelt").innerHTML = obj.duration;
+            document.getElementById("workerusernamefelt").innerHTML = obj.workerusername;
+            document.getElementById("commentfelt").innerHTML = obj.comment;
+        }else{
+            changeVisibility(div, "previousAftalerWorker");
+            document.getElementById("datefelt2").innerHTML = obj.datetime;
+            document.getElementById("durationfelt2").innerHTML = obj.duration;
+            document.getElementById("workerusernamefelt2").innerHTML = obj.workerusername;
+            document.getElementById("patientfelt2").innerHTML = obj.cpr;
+            document.getElementById("commentfelt2").innerHTML = obj.comment;
+
+        }
+
+
+
+
 
     }
 
@@ -296,7 +337,7 @@ async function fetchAftalerWorker(){
         document.getElementById("errorfelt3").innerHTML = "";
         console.log(obj);
         const obj2 = obj;
-        obj2.forEach(o => delete o.note);
+        obj2.forEach(o => delete o.comment);
         obj2.forEach(o => delete o.workerusername);
         obj2.forEach(o => o.duration = secondsToHms(o.duration));
 
@@ -331,8 +372,10 @@ async function fetchAftalerWorker(){
             btn.classList.add("button_select")
             btn.innerHTML = "Vælg aftale";
             btn.onclick = function () {
-                sessionStorage.setItem("aftaleID", 1); // Unique aftaleID here!
-                changeVisibility("visAftale", "aftaleListContainer");
+
+                console.log("Aftale ID:" + objekt.aftaleid);
+                fetchSingleAftale(objekt.aftaleid, 'showWorkerAftaleDiv');
+
 
             };
             row.appendChild(btn);
@@ -346,7 +389,7 @@ async function fetchAftalerWorker(){
     }
 }
 //*******************************************************************************************************************//
-// API post consultation request//
+// API post consultation request to DB//
 //*******************************************************************************************************************//
 async function requestAftale(){
     let aftaleForm = document.getElementById("aftaleForm");
@@ -360,7 +403,7 @@ async function requestAftale(){
     console.log(object2);
 
     let bearer = "Bearer " + localStorage.getItem("token")
-    const res = await fetch("api/requestcons", {
+    const res = await fetch("api/request/save/request", {
         method: "POST",
         body: JSON.stringify(object2),
         headers: {
@@ -373,9 +416,36 @@ async function requestAftale(){
         document.getElementById("successcode2").innerHTML = "Du har nu anmodet om en aftale.";
     }
 }
-
 //*******************************************************************************************************************//
+// API post consultation to DB//
+//*******************************************************************************************************************//
+async function createAftaleFromReq(){
+    let aftaleReqForm = document.getElementById("aftaleReqForm");
+    const formData = new FormData(aftaleReqForm);
+    const object = Object.fromEntries(formData);
+    console.log(object);
+    object.datetime = object.datetime.substring(0, object.datetime.indexOf("T"))+ "T"+ object.time + ":00Z";
+    delete object['time'];
 
+    console.log("createaftaleform req obj " + object.datetime);
+
+    let bearer = "Bearer " + localStorage.getItem("token")
+    const res = await fetch("api/request/save/aftale", {
+        method: "POST",
+        body: JSON.stringify(object),
+        headers: {
+            "content-type": "application/json",
+            'Authorization' : bearer
+        }
+    })
+
+    if(res.status === 201) {
+        document.getElementById("successcode4").innerHTML = "Du har nu oprettet en aftale fra anmodning.";
+    }
+}
+//*******************************************************************************************************************//
+// API fetch all request flags//
+//*******************************************************************************************************************//
 async function fetchFlags(){
     let object = {};
     object["workerusername"] = sessionStorage.getItem("workerusername");
@@ -383,7 +453,7 @@ async function fetchFlags(){
     console.log(object);
 
     let bearer = "Bearer " + localStorage.getItem("token")
-    const res = await fetch("api/flags/" + object.workerusername, {
+    const res = await fetch("api/request/flags/" + sessionStorage.getItem("workerusername"), {
         method: "GET",
         headers: {
             'Authorization': bearer,
@@ -418,20 +488,121 @@ async function fetchFlags(){
     btn2.classList.add("button")
     btn2.innerHTML = "Gå til anmodninger";
     btn2.onclick = function () {
-        sessionStorage.setItem("aftaleID", 1); // Unique aftaleID here!
+        loadHTML('sitecontent','request.html')
+        fetchRequests()
 
     };
     document.getElementById("flagUserDiv").append(btn2);
 
 
 }
-
 //*******************************************************************************************************************//
+// API fetch all requests for a worker //
+//*******************************************************************************************************************//
+async function fetchRequests(){
+    console.log("Fetching request list..")
+    let bearer = "Bearer " + localStorage.getItem("token")
+    const res = await fetch("api/request/list/"+ sessionStorage.getItem("workerusername"), {
+        method: "GET",
+        headers: {
+            'Authorization' : bearer,
+        }
+    })
+    console.log(res)
+    const json = await res.text();
+    const obj = JSON.parse(json);
+    console.log(res.status);
+    if (res.status != 201){
+        document.getElementById("errorfelt5").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
+    }else{
+        document.getElementById("requestTable").innerHTML = "";
+
+        console.log(obj);
+        const obj2 = obj;
+        obj2.forEach(o => delete o.workerusername);
+        obj2.forEach(o => o.comment = o.comment.substring(0,25) + "...");
+
+        console.log(obj2);
+
+        let myTable = document.querySelector('#requestTable');
+
+        let headers = ['Patient','Ønsket dato', 'Ønsket tidspunkt', 'Årsag til konsultation', 'Gå til'];
+
+        let table = document.createElement('table');
+        table.classList.add("table1");
+        let headerRow = document.createElement('tr');
+        headers.forEach(headerText => {
+            let header = document.createElement('th');
+            let textNode = document.createTextNode(headerText);
+            header.appendChild(textNode);
+            headerRow.appendChild(header);
+        });
+
+        table.appendChild(headerRow);
+
+        obj2.forEach(objekt => {
+            let row = document.createElement('tr');
+            Object.values(objekt).forEach(text => {
+                let cell = document.createElement('td');
+                let textNode = document.createTextNode(text);
+                cell.appendChild(textNode);
+                row.appendChild(cell);
 
 
+            })
+            let btn = document.createElement('button');
+            btn.classList.add("button_select")
+            btn.innerHTML = "Vælg anmodning";
+            btn.onclick = function () {
+                // sessionStorage.setItem("aftaleID", 1); // Unique aftaleID here!
+                console.log("Aftale ID:" + objekt.aftaleid);
+                fetchSingleRequest(objekt.aftaleid);
 
 
+            };
+            row.appendChild(btn);
+            table.appendChild(row);
 
+        });
+
+        myTable.appendChild(table);
+
+
+    }
+}
+//*******************************************************************************************************************//
+// API fetch single requests for a worker //
+//*******************************************************************************************************************//
+async function fetchSingleRequest(aftaleID){
+    let bearer = "Bearer " + localStorage.getItem("token")
+    const res = await fetch("api/request/" + aftaleID, {
+        method: "GET",
+        headers: {
+            'Authorization' : bearer,
+        }
+    })
+    console.log(res)
+    const json = await res.text();
+    const obj = JSON.parse(json);
+    console.log(res.status);
+    if (res.status != 201){
+
+    }else{
+
+        console.log(obj);
+        console.log("Hurra!");
+        changeVisibility("requestSingleContainer", "requestListContainer");
+        document.getElementById("datefeltreq").value = obj.datetime;
+        document.getElementById("timeofdayfeltreq").value = obj.timeOfDay;
+        document.getElementById("workerusernamefeltreq").value = obj.workerusername;
+        document.getElementById("commentfeltreq").innerHTML = obj.comment;
+        document.getElementById("patientfeltreq").value = obj.cpr;
+        document.getElementById("aftaleidfelt").value = obj.aftaleid;
+
+
+    }
+
+}
 
 
 function loadWelcome(){
