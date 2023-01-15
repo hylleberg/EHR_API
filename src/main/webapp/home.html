@@ -57,7 +57,7 @@
             <button class="button" type="Submit" onclick="fetchCPR()" id="cprbutton">Søg CPR</button>
             <br><br>
             <hr>
-            <div class="error-message" id="errorcode"></div>
+            <div id="error_sidebar" class="error-message"></div>
             <div class="foundCPRDiv">
                 <div class="" id="navnfelt"></div>
                 <div class="" id="cprfelt"></div>
@@ -76,14 +76,16 @@
             <div id="chooseNewPatientButton" class="buttonbottom"></div>
 
         </div>
-        <div id="error_sidebar" class="error-message"></div>
-    </div>
-
-
-    <div class="sitecontent" id="sitecontent">
-
 
     </div>
+
+
+    <div class="sitecontent" id="sitecontentwrapper">
+        <div  id="sitecontent"></div>
+        <div class="error-message" id="errorfelt3"></div>
+        <div class="success-message" id="succescode"></div>
+    </div>
+
 </div>
 
 

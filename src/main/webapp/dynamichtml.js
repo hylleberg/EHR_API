@@ -1,5 +1,7 @@
 
 function loadHTML(id,filename){
+    document.getElementById("succescode").innerHTML = "";
+    document.getElementById("errorfelt3").innerHTML = "";
 
     console.log(id);
     console.log(filename);

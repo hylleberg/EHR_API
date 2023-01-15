@@ -26,7 +26,7 @@
       </div>
 
   </div>
-  <div class="error-message" id="errorfelt3"></div>
+
 
   <div class="hidden" id="previousAftalerWorker">
     <h1>Konsultationsliste for læge</h1>
@@ -42,7 +42,10 @@
     <h1>Konsultationsliste for patient</h1>
     <hr>
     <div class="aftaleListContainer" id="aftaleListContainer2">
+      <h3>Fremtidige aftaler</h3>
       <div id="comingAftalerPatientTable"></div>
+
+      <h3>Tidligere aftaler</h3>
       <div id="previousAftalerPatientTable"></div>
 
     </div>
@@ -51,7 +54,7 @@
   </div>
 
   <div class="hidden" id="showPatientAftaleDiv">
-    <h1>Konsultationsliste for patient</h1>
+    <h1>Konsultation for patient</h1>
     <hr>
     <div style="display: flex;, column-gap: 50px; max-width: 300px; width:100%; justify-content: space-between;">
       <label>Dato: <div id="datefelt" class="fields"></div></label><br>
@@ -65,11 +68,11 @@
   </div>
 
   <div class="hidden" id="showWorkerAftaleDiv">
-    <h1>Konsultationsliste for læge</h1>
+    <h1>Konsultation for læge</h1>
     <hr>
     <div style="display: flex;, column-gap: 50px; max-width: 300px; width:100%; justify-content: space-between;">
       <label>Dato: <div id="datefelt2" class="fields"></div></label><br>
-      <label>Varighed: <div id="durationfelt2" class="fields"></div></label>
+      <label>Varighed (minutter): <div id="durationfelt2" class="fields"></div></label>
     </div><br>
     <div style="display: flex;, column-gap: 50px; max-width: 300px; width:100%; justify-content: space-between;">
       <label>Behandler:  <div id="workerusernamefelt2" class="fields"></div></label>
@@ -77,7 +80,7 @@
     </div><br>
 
   <br>
-    <label>Kommentar:  <textarea id="commentfelt2" class="note" readonly></textarea></label><br>
+    <label>Kommentar:  <textarea id="commentfelt2" class="comment" readonly></textarea></label><br>
     <button class="button" type="Submit" onclick="changeVisibility('previousAftalerWorker', 'showWorkerAftaleDiv')">
       Gå tilbage
     </button>
@@ -102,7 +105,7 @@
               <label>Vælg tidspunkt:<input type="time" name="time" required></label>
             </div>
             <div id="firstColumn">
-              <label>Varighed: <input name="duration"></label>
+              <label>Varighed (minutter): <input name="duration"></label>
             </div>
 
           </div>
@@ -122,7 +125,7 @@
 
 
           </select>
-
+<br><br>
           <label>Kommentar:</label>
           <textarea type="text" class="subject" name="note" autofocus
                     placeholder=""></textarea>

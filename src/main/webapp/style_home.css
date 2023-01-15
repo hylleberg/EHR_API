@@ -162,7 +162,7 @@ input {
     padding: 0.75rem;
     box-sizing: border-box;
     border-radius: var(--border-radius);
-    border: 1px solid #dddddd;
+    border: 1px solid black;
     outline: none;
     background: #eeeeee;
     transition: background 0.2s, border-color 0.2s;

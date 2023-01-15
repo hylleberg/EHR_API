@@ -65,6 +65,8 @@ if(sessionStorage.getItem("role") == "?doctor?"){
 // function to API fetch a logged in patient data //
 //*******************************************************************************************************************//
 async function fetchPatientData() {
+
+
     let object = {};
     object["cpr"] = sessionStorage.getItem("cpr");
     console.log(object);
@@ -123,7 +125,7 @@ async function fetchCPR() {
         console.log(obj.firstname)
         console.log(obj.lastname)
         console.log(obj.adresse)
-        document.getElementById("errorcode").innerHTML = ""
+        document.getElementById("error_sidebar").innerHTML = ""
         document.getElementById("navnfelt").innerHTML = obj.firstname + " " + obj.lastname;
         document.getElementById("cprfelt").innerHTML = "(" + obj.cpr + ")";
 
@@ -184,6 +186,9 @@ async function fetchCPR() {
 // change visibility of div element //
 //*******************************************************************************************************************//
 function changeVisibility(showDiv, hideDiv){
+    document.getElementById("succescode").innerHTML = "";
+    document.getElementById("errorfelt3").innerHTML = "";
+    document.getElementById("error_sidebar").innerHTML = "";
     document.getElementById(showDiv).classList.remove("hidden");
     document.getElementById(hideDiv).classList.add("hidden");
 
@@ -192,6 +197,8 @@ function changeVisibility(showDiv, hideDiv){
 // API fetch all consultations from a chosen CPR //
 //*******************************************************************************************************************//
 async function fetchAftalerPatient(){
+
+
     let bearer = "Bearer " + localStorage.getItem("token")
     const res = await fetch("api/aftale/patient/"+ sessionStorage.getItem("cpr"), {
         method: "GET",
@@ -206,7 +213,7 @@ async function fetchAftalerPatient(){
     if (res.status != 201){
 
         document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
-        document.getElementById("errorfelt4").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
+
     }
 
     else{
@@ -342,6 +349,9 @@ async function fetchAftalerPatient(){
 // API fetch all consultations from a chosen CPR //
 //*******************************************************************************************************************//
 async function deleteAftale(aftaleid){
+
+
+
     let bearer = "Bearer " + localStorage.getItem("token")
     const res = await fetch("api/aftale/delete/"+ aftaleid, {
         method: "DELETE",
@@ -353,6 +363,7 @@ async function deleteAftale(aftaleid){
     console.log(res.status);
     if(res.status != 201){
         console.log("Issue deleting..")
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
 
     }else{
         console.log("Aftale deleted!")
@@ -364,6 +375,7 @@ async function deleteAftale(aftaleid){
 // API fetch single consultation from a chosen aftaleID//
 //*******************************************************************************************************************//
 async function fetchSingleAftale(aftaleID, div){
+
     let bearer = "Bearer " + localStorage.getItem("token")
     const res = await fetch("api/aftale/" + aftaleID, {
         method: "GET",
@@ -374,14 +386,15 @@ async function fetchSingleAftale(aftaleID, div){
     console.log(res)
     const json = await res.text();
     const obj = JSON.parse(json);
+
     console.log(res.status);
     if (res.status != 201){
-
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
     }else{
 
         console.log(obj);
         console.log("Hurra!");
-
+        obj.duration = secondsToHms(obj.duration);
         if(div == "showPatientAftaleDiv"){
             changeVisibility(div, "previousAftalerPatient");
             document.getElementById("datefelt").innerHTML = obj.datetime;
@@ -409,6 +422,8 @@ async function fetchSingleAftale(aftaleID, div){
 // API fetch all consultations from a chosen workerusername//
 //*******************************************************************************************************************//
 async function fetchAftalerWorker(){
+
+
     let bearer = "Bearer " + localStorage.getItem("token")
     const res = await fetch("api/aftale/worker/"+ sessionStorage.getItem("workerusername"), {
         method: "GET",
@@ -422,7 +437,7 @@ async function fetchAftalerWorker(){
     if (res.status != 201){
 
         document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
-        document.getElementById("errorfelt4").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
+
     }
 
     else{
@@ -485,6 +500,8 @@ async function fetchAftalerWorker(){
 // API post consultation request to DB//
 //*******************************************************************************************************************//
 async function requestAftale(){
+
+
     let aftaleForm = document.getElementById("aftaleForm");
     const formData = new FormData(aftaleForm);
     const object = Object.fromEntries(formData);
@@ -506,13 +523,16 @@ async function requestAftale(){
     })
 
     if(res.status === 201) {
-        document.getElementById("successcode2").innerHTML = "Du har nu anmodet om en aftale.";
+        document.getElementById("succescode").innerHTML = "Du har nu anmodet om en aftale.";
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
     }
 }
 //*******************************************************************************************************************//
 // API post consultation from req to DB//
 //*******************************************************************************************************************//
 async function createAftaleFromReq(){
+
+
     let aftaleReqForm = document.getElementById("aftaleReqForm");
     const formData = new FormData(aftaleReqForm);
     const object = Object.fromEntries(formData);
@@ -534,13 +554,16 @@ async function createAftaleFromReq(){
     })
 
     if(res.status === 201) {
-        document.getElementById("succescode_req").innerHTML = "Du har nu oprettet en aftale fra anmodning.";
+        document.getElementById("succescode").innerHTML = "Du har nu oprettet en aftale fra anmodning.";
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
     }
 }
 //*******************************************************************************************************************//
 // API post consultation to DB//
 //*******************************************************************************************************************//
 async function createAftale(){
+
+
     let createAftaleForm = document.getElementById("createAftaleForm");
     const formData = new FormData(createAftaleForm);
     const object = Object.fromEntries(formData);
@@ -562,13 +585,16 @@ async function createAftale(){
     })
 
     if(res.status === 201) {
-        document.getElementById("succescode_req").innerHTML = "Du har nu oprettet en aftale fra anmodning.";
+        document.getElementById("succescode").innerHTML = "Du har nu oprettet en aftale fra anmodning.";
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
     }
 }
 //*******************************************************************************************************************//
 // API fetch all request flags//
 //*******************************************************************************************************************//
 async function fetchFlags(){
+
+
     let object = {};
     object["workerusername"] = sessionStorage.getItem("workerusername");
 
@@ -622,6 +648,8 @@ async function fetchFlags(){
 // API fetch all requests for a worker //
 //*******************************************************************************************************************//
 async function fetchRequests(){
+
+
     console.log("Fetching request list..")
     let bearer = "Bearer " + localStorage.getItem("token")
     const res = await fetch("api/request/list/"+ sessionStorage.getItem("workerusername"), {
@@ -635,7 +663,7 @@ async function fetchRequests(){
     const obj = JSON.parse(json);
     console.log(res.status);
     if (res.status != 201){
-        document.getElementById("errorfelt5").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
     }else{
         document.getElementById("requestTable").innerHTML = "";
 
@@ -696,6 +724,8 @@ async function fetchRequests(){
 // API fetch single requests for a worker //
 //*******************************************************************************************************************//
 async function fetchSingleRequest(aftaleID){
+
+
     let bearer = "Bearer " + localStorage.getItem("token")
     const res = await fetch("api/request/" + aftaleID, {
         method: "GET",
@@ -708,7 +738,7 @@ async function fetchSingleRequest(aftaleID){
     const obj = JSON.parse(json);
     console.log(res.status);
     if (res.status != 201){
-
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
     }else{
 
         console.log(obj);
