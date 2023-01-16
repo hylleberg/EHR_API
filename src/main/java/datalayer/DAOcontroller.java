@@ -1,5 +1,6 @@
 package datalayer;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,10 +8,7 @@ import java.util.List;
 import exceptionhandler.DataNotFoundException;
 
 import jakarta.ws.rs.core.Response;
-import model.AftaleData;
-import model.LoginData;
-import model.PatientData;
-import model.RequestData;
+import model.*;
 
 public class DAOcontroller {
 
@@ -454,6 +452,121 @@ public class DAOcontroller {
         }
     }
 
+    public void createEkgValues(EKGData ekgData) {
+        int newId = 0;
+        List<Float> ekgValues = ekgData.getEkgDataList();
+        String cpr = ekgData.getCpr();
+        String startTime = ekgData.getStartTime();
+
+        Connection con = SqlConnector.getConnection();
+        try {
+            PreparedStatement ps = con.prepareStatement("INSERT INTO `s112786`.`ekg` (startTime, cpr) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, startTime);
+            ps.setString(2, cpr);
+
+
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+
+            if(rs.next()){
+                 newId = rs.getInt(1);
+            }
+
+
+            //batch insert ekgvalues
+            ps = con.prepareStatement("INSERT INTO `s112786`.`ekgvalues` (ekgID, voltage) VALUES (?, ?)",
+                    Statement.RETURN_GENERATED_KEYS);
+            System.out.println("EKGVALUES SIZE: " + ekgValues.size());
+            System.out.println("EKG ID: " + newId);
+
+            // Kilde:https://stackoverflow.com/questions/530012/how-to-convert-java-util-date-to-java-sql-date?fbclid=IwAR1j4y2K4OBh9y5g97npGGbUwzkZBiaHAW2UHuTfp4xKT3Q3Y5zfMVL9f54
+            for (int i = 0; i < ekgValues.size();i++) {
+                ps.setInt(1, newId);
+                ps.setFloat(2, ekgValues.get(i));
+                ps.addBatch();
+                //ps.clearParameters(); // WHY?
+            }
+
+            ps.executeBatch();
+
+            System.out.println("Inserted new data in db; Count = " + ekgValues.size());
+            }catch(Exception e) {
+            e.printStackTrace();
+            System.out.println("Kunne ikke poste EKG data til DB");
+            throw new DataNotFoundException("Kunne ikke poste EKG data til DB");
+
+            }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
+        }
+
+
+        }
+        public Response fetchEKGListDB(String cpr){
+            List<EKGData> ekgliste = new ArrayList<EKGData>();
+            try{
+
+
+                Connection con = sqlcon.getConnection();
+                PreparedStatement preparedStatement = con.prepareStatement("select * from `s112786`.`ekg` where cpr  = ?");
+                preparedStatement.setString(1, cpr);
+
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                while (resultSet.next()) {
+                    EKGData ekgdata = new EKGData();
+                    ekgdata.setCpr(resultSet.getString("cpr"));
+                    ekgdata.setStartTime(resultSet.getString("startTime"));
+                    ekgdata.setEkgID(resultSet.getInt("id"));
+
+                    ekgliste.add(ekgdata);
+                }
+            return Response.status(Response.Status.CREATED).entity(ekgliste).build();
+            }catch(Exception e){
+
+                e.printStackTrace();
+                throw new DataNotFoundException("Kunne ikke finde EKG Liste fra CPR: " + cpr);
+            }finally {
+                try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+                try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+                try { con.close(); } catch (Exception e) { /* Ignored */ }
+            }
+
+
+
+
+        }
+        public Response fetchEKGValuesDB(String ekgID){
+            List<Float> ekgDataList = new ArrayList<>();
+        try{
+
+            Connection con = sqlcon.getConnection();
+            PreparedStatement preparedStatement = con.prepareStatement("select * from `s112786`.`ekgvalues` where ekgID = ?");
+            preparedStatement.setString(1, ekgID);
+
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+            ekgDataList.add(resultSet.getFloat("voltage"));
+
+            }
+            return Response.status(Response.Status.CREATED).entity(ekgDataList).build();
+        }catch(Exception e){
+
+            e.printStackTrace();
+            throw new DataNotFoundException("Kunne ikke finde EKG måling fra ID: " + ekgID);
+        }finally {
+            try { resultSet.close(); } catch (Exception e) { /* Ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* Ignored */ }
+            try { con.close(); } catch (Exception e) { /* Ignored */ }
+        }
+
+        }
 
 }
 

@@ -13,7 +13,7 @@ if (sessionStorage.getItem("cpr") && sessionStorage.getItem("firstname") && sess
     button2.innerHTML = "Vælg ny patient.";
     button2.setAttribute('type', 'button');
     button2.classList.add('button');
-    button2.onclick = function() {
+    button2.onclick = function () {
 
         changeVisibility("findPatientDiv", "showPatientDiv");
         sessionStorage.setItem("firstname", "");
@@ -27,7 +27,6 @@ if (sessionStorage.getItem("cpr") && sessionStorage.getItem("firstname") && sess
         document.getElementById("chooseButton").innerHTML = "";
 
 
-
     };
     var divButton2 = document.getElementById("chooseNewPatientButton")
     divButton2.innerHTML = "";
@@ -35,30 +34,31 @@ if (sessionStorage.getItem("cpr") && sessionStorage.getItem("firstname") && sess
     changeVisibility("showPatientDiv", "findPatientDiv");
 }
 
-function clearSession(){
+function clearSession() {
     sessionStorage.clear();
 
 }
+
 //*******************************************************************************************************************//
 // Removing padding for view //
 //*******************************************************************************************************************//
 
-    let userText = sessionStorage.getItem("user").substring(1, (sessionStorage.getItem("user").length)-1)
-    sessionStorage.setItem("workerusername", sessionStorage.getItem("user").substring(1, (sessionStorage.getItem("user").length)-1));
-    let roleText = sessionStorage.getItem("role").substring(1, (sessionStorage.getItem("role").length)-1)
-    document.getElementById("userID").innerHTML =  userText;
-    document.getElementById("roleID").innerHTML =  roleText;
+let userText = sessionStorage.getItem("user").substring(1, (sessionStorage.getItem("user").length) - 1)
+sessionStorage.setItem("workerusername", sessionStorage.getItem("user").substring(1, (sessionStorage.getItem("user").length) - 1));
+let roleText = sessionStorage.getItem("role").substring(1, (sessionStorage.getItem("role").length) - 1)
+document.getElementById("userID").innerHTML = userText;
+document.getElementById("roleID").innerHTML = roleText;
 //*******************************************************************************************************************//
 //Check if user is patient //
 //*******************************************************************************************************************//
 
-if(sessionStorage.getItem("role") == "?patient?"){
+if (sessionStorage.getItem("role") == "?patient?") {
     document.getElementById("findPatientDiv").classList.add("hidden");
     fetchPatientData();
 }
 //Check if user is doctor //
 //*******************************************************************************************************************//
-if(sessionStorage.getItem("role") == "?doctor?"){
+if (sessionStorage.getItem("role") == "?doctor?") {
 
     fetchFlags();
 }
@@ -82,10 +82,10 @@ async function fetchPatientData() {
     const json = await res.text();
     const obj = JSON.parse(json);
 
-    if(res.status != 201){
+    if (res.status != 201) {
 
-        document.getElementById("error_sidebar").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage;
-    }else{
+        document.getElementById("error_sidebar").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage + ".";
+    } else {
         document.getElementById("navnfelt_sidebar").innerHTML = obj.firstname + " " + obj.lastname;
         document.getElementById("cprfelt_sidebar").innerHTML = obj.cpr;
         document.getElementById("addfelt_sidebar").innerHTML = obj.address;
@@ -96,6 +96,7 @@ async function fetchPatientData() {
 
 
 }
+
 //*******************************************************************************************************************//
 // function to API fetch a patient //
 //*******************************************************************************************************************//
@@ -112,16 +113,16 @@ async function fetchCPR() {
     const res = await fetch("api/" + object.cpr, {
         method: "GET",
         headers: {
-            'Authorization' : bearer,
+            'Authorization': bearer,
         },
     });
 
     const json = await res.text();
     const obj = JSON.parse(json);
-    if(res.status != 201) {
-        document.getElementById("error_sidebar").innerHTML = "Fejlkode: " + obj.errorCode + ". " +obj.errorMessage;
+    if (res.status != 201) {
+        document.getElementById("error_sidebar").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage;
 
-    }else{
+    } else {
         console.log(obj.firstname)
         console.log(obj.lastname)
         console.log(obj.adresse)
@@ -129,11 +130,11 @@ async function fetchCPR() {
         document.getElementById("navnfelt").innerHTML = obj.firstname + " " + obj.lastname;
         document.getElementById("cprfelt").innerHTML = "(" + obj.cpr + ")";
 
-      var button = document.createElement("button");
-      button.innerHTML = "Vælg patient";
-      button.setAttribute('type', 'button');
-      button.classList.add('button');
-        button.onclick = function(){
+        var button = document.createElement("button");
+        button.innerHTML = "Vælg patient";
+        button.setAttribute('type', 'button');
+        button.classList.add('button');
+        button.onclick = function () {
             sessionStorage.setItem("firstname", obj.firstname);
             sessionStorage.setItem("lastname", obj.lastname);
             sessionStorage.setItem("address", obj.address);
@@ -148,7 +149,7 @@ async function fetchCPR() {
             button2.innerHTML = "Vælg ny patient.";
             button2.setAttribute('type', 'button');
             button2.classList.add('button');
-            button2.onclick = function() {
+            button2.onclick = function () {
 
                 changeVisibility("findPatientDiv", "showPatientDiv");
                 sessionStorage.setItem("firstname", "");
@@ -162,7 +163,6 @@ async function fetchCPR() {
                 document.getElementById("chooseButton").innerHTML = "";
 
 
-
             };
             var divButton2 = document.getElementById("chooseNewPatientButton")
             divButton2.innerHTML = "";
@@ -170,53 +170,154 @@ async function fetchCPR() {
 
             changeVisibility("showPatientDiv", "findPatientDiv");
 
-      };
+        };
 
 
-
-      var divButton = document.getElementById("chooseButton")
+        var divButton = document.getElementById("chooseButton")
         divButton.innerHTML = "";
-      divButton.appendChild(button);
+        divButton.appendChild(button);
 
-     }
+    }
     console.log(res)
 
 }
+
 //*******************************************************************************************************************//
 // change visibility of div element //
 //*******************************************************************************************************************//
-function changeVisibility(showDiv, hideDiv){
+function changeVisibility(showDiv, hideDiv) {
     document.getElementById("succescode").innerHTML = "";
     document.getElementById("errorfelt3").innerHTML = "";
     document.getElementById("error_sidebar").innerHTML = "";
     document.getElementById(showDiv).classList.remove("hidden");
     document.getElementById(hideDiv).classList.add("hidden");
-
 }
-//*******************************************************************************************************************//
-// API fetch all consultations from a chosen CPR //
-//*******************************************************************************************************************//
-async function fetchAftalerPatient(){
 
+//*******************************************************************************************************************//
+// API fetch all EKG recording list from a chosen CPR //
+//*******************************************************************************************************************//
+async function fetchEKGList() {
 
     let bearer = "Bearer " + localStorage.getItem("token")
-    const res = await fetch("api/aftale/patient/"+ sessionStorage.getItem("cpr"), {
+    const res = await fetch("api/ekg/fetch/list/" + sessionStorage.getItem("cpr"), {
         method: "GET",
         headers: {
-            'Authorization' : bearer,
+            'Authorization': bearer,
         }
     })
     console.log(res)
     const json = await res.text();
     const obj = JSON.parse(json);
     console.log(res.status);
-    if (res.status != 201){
+    if (res.status != 201) {
 
-        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage + ".";
+
+    } else {
+
+
+        console.log(obj);
+
+        obj.forEach(o => delete o.ekgDataList)
+        // Print table for future consultations
+        let myTable = document.querySelector('#ekgListTable');
+        let headers = ['Patient', 'Dato og tid', 'EKG Målings ID'];
+
+        let table = document.createElement('table');
+        table.classList.add("table1");
+        let headerRow = document.createElement('tr');
+        headers.forEach(headerText => {
+            let header = document.createElement('th');
+            let textNode = document.createTextNode(headerText);
+            header.appendChild(textNode);
+            headerRow.appendChild(header);
+        });
+
+        table.appendChild(headerRow);
+
+        obj.forEach(objekt => {
+            let row = document.createElement('tr');
+            Object.values(objekt).forEach(text => {
+                let cell = document.createElement('td');
+                let textNode = document.createTextNode(text);
+                cell.appendChild(textNode);
+                row.appendChild(cell);
+
+
+            })
+            let btn = document.createElement('button');
+            btn.classList.add("button")
+            btn.innerHTML = "Vælg måling";
+            btn.onclick = async function () {
+                console.log("EKG ID:" + objekt.ekgID);
+                const arrayObj = await fetchEKGRecording(objekt.ekgID)
+                console.log(arrayObj);
+                makeGraph(arrayObj);
+                changeVisibility("ekgMonitorContainer", "ekgListContainer")
+            };
+
+
+            row.appendChild(btn);
+
+            table.appendChild(row);
+
+        });
+
+        myTable.appendChild(table);
+
 
     }
+}
 
-    else{
+//*******************************************************************************************************************//
+// API fetch all EKG recording list from a chosen CPR //
+//*******************************************************************************************************************//
+async function fetchEKGRecording(ekgID) {
+    let bearer = "Bearer " + localStorage.getItem("token")
+    const res = await fetch("api/ekg/fetch/recording/" + sessionStorage.getItem("cpr") + "/" + ekgID, {
+        method: "GET",
+        headers: {
+            'Authorization': bearer,
+        }
+    })
+    console.log(res)
+    const json = await res.text();
+    const obj = JSON.parse(json);
+    console.log(res.status);
+    if (res.status != 201) {
+
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage + ".";
+
+    } else {
+
+        // console.log("Array of EKG voltages.." + obj)
+        return obj;
+
+    }
+}
+
+//*******************************************************************************************************************//
+// API fetch all consultations from a chosen CPR //
+//*******************************************************************************************************************//
+async function fetchAftalerPatient(aftaleSite) {
+
+
+    let bearer = "Bearer " + localStorage.getItem("token")
+    const res = await fetch("api/aftale/patient/" + sessionStorage.getItem("cpr"), {
+        method: "GET",
+        headers: {
+            'Authorization': bearer,
+        }
+    })
+    console.log(res)
+    const json = await res.text();
+    const obj = JSON.parse(json);
+    console.log(res.status);
+    if (res.status != 201) {
+
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage + ".";
+
+    } else {
         changeVisibility('previousAftalerPatient', 'konsultationContainer');
         document.getElementById("previousAftalerPatientTable").innerHTML = "";
 
@@ -268,10 +369,10 @@ async function fetchAftalerPatient(){
             btn.classList.add("button")
             btn.innerHTML = "Vælg aftale";
             btn.onclick = function () {
-               // sessionStorage.setItem("aftaleID", 1); // Unique aftaleID here!
+                // sessionStorage.setItem("aftaleID", 1); // Unique aftaleID here!
                 console.log("Aftale ID:" + objekt.aftaleid);
                 fetchSingleAftale(objekt.aftaleid, 'showPatientAftaleDiv');
-               // changeVisibility("visAftale", "aftaleListContainer");
+                // changeVisibility("visAftale", "aftaleListContainer");
 
             };
             let buttondiv = "btn" + objekt.aftaleid;
@@ -282,14 +383,14 @@ async function fetchAftalerPatient(){
             btn3.onclick = function () {
                 document.getElementById(buttondiv).classList.add("button_warning")
                 document.getElementById(buttondiv).innerHTML = "Tryk igen for at bekræfte";
-                document.getElementById(buttondiv).onclick = function(){
+                document.getElementById(buttondiv).onclick = function () {
                     deleteAftale(objekt.aftaleid);
-                    loadHTML('sitecontent','aftaler_patient.html');
+                    loadHTML('sitecontent', 'aftaler_patient.html');
                     fetchAftalerPatient('previousAftalerPatient');
                     console.log("Bekræftet!");
                 }
                 console.log("Sletter aftale.....");
-               // document.location.reload(true)
+                // document.location.reload(true)
 
 
             };
@@ -345,42 +446,43 @@ async function fetchAftalerPatient(){
         myTable2.appendChild(table2);
     }
 }
+
 //*******************************************************************************************************************//
 // API fetch all consultations from a chosen CPR //
 //*******************************************************************************************************************//
-async function deleteAftale(aftaleid){
-
+async function deleteAftale(aftaleid) {
 
 
     let bearer = "Bearer " + localStorage.getItem("token")
-    const res = await fetch("api/aftale/delete/"+ aftaleid, {
+    const res = await fetch("api/aftale/delete/" + aftaleid, {
         method: "DELETE",
         headers: {
-            'Authorization' : bearer,
+            'Authorization': bearer,
         }
     })
     console.log(res)
     console.log(res.status);
-    if(res.status != 201){
+    if (res.status != 201) {
         console.log("Issue deleting..")
-        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage + ".";
 
-    }else{
+    } else {
         console.log("Aftale deleted!")
 
     }
 
 }
+
 //*******************************************************************************************************************//
 // API fetch single consultation from a chosen aftaleID//
 //*******************************************************************************************************************//
-async function fetchSingleAftale(aftaleID, div){
+async function fetchSingleAftale(aftaleID, div) {
 
     let bearer = "Bearer " + localStorage.getItem("token")
     const res = await fetch("api/aftale/" + aftaleID, {
         method: "GET",
         headers: {
-            'Authorization' : bearer,
+            'Authorization': bearer,
         }
     })
     console.log(res)
@@ -388,20 +490,20 @@ async function fetchSingleAftale(aftaleID, div){
     const obj = JSON.parse(json);
 
     console.log(res.status);
-    if (res.status != 201){
-        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
-    }else{
+    if (res.status != 201) {
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage + ".";
+    } else {
 
         console.log(obj);
         console.log("Hurra!");
         obj.duration = secondsToHms(obj.duration);
-        if(div == "showPatientAftaleDiv"){
+        if (div == "showPatientAftaleDiv") {
             changeVisibility(div, "previousAftalerPatient");
             document.getElementById("datefelt").innerHTML = obj.datetime;
             document.getElementById("durationfelt").innerHTML = obj.duration;
             document.getElementById("workerusernamefelt").innerHTML = obj.workerusername;
             document.getElementById("commentfelt").innerHTML = obj.note;
-        }else{
+        } else {
             changeVisibility(div, "previousAftalerWorker");
             document.getElementById("datefelt2").innerHTML = obj.datetime;
             document.getElementById("durationfelt2").innerHTML = obj.duration;
@@ -412,35 +514,31 @@ async function fetchSingleAftale(aftaleID, div){
         }
 
 
-
-
-
     }
 
 }
+
 //*******************************************************************************************************************//
 // API fetch all consultations from a chosen workerusername//
 //*******************************************************************************************************************//
-async function fetchAftalerWorker(){
+async function fetchAftalerWorker() {
 
 
     let bearer = "Bearer " + localStorage.getItem("token")
-    const res = await fetch("api/aftale/worker/"+ sessionStorage.getItem("workerusername"), {
+    const res = await fetch("api/aftale/worker/" + sessionStorage.getItem("workerusername"), {
         method: "GET",
         headers: {
-            'Authorization' : bearer,
+            'Authorization': bearer,
         }
     })
     console.log(res)
     const json = await res.text();
     const obj = JSON.parse(json);
-    if (res.status != 201){
+    if (res.status != 201) {
 
-        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage + ".";
 
-    }
-
-    else{
+    } else {
         changeVisibility('previousAftalerWorker', 'konsultationContainer');
         document.getElementById("errorfelt3").innerHTML = "";
         console.log(obj);
@@ -496,10 +594,11 @@ async function fetchAftalerWorker(){
 
     }
 }
+
 //*******************************************************************************************************************//
 // API post consultation request to DB//
 //*******************************************************************************************************************//
-async function requestAftale(){
+async function requestAftale() {
 
 
     let aftaleForm = document.getElementById("aftaleForm");
@@ -518,26 +617,29 @@ async function requestAftale(){
         body: JSON.stringify(object2),
         headers: {
             "content-type": "application/json",
-            'Authorization' : bearer
+            'Authorization': bearer
         }
     })
 
-    if(res.status === 201) {
+    if (res.status === 201) {
         document.getElementById("succescode").innerHTML = "Du har nu anmodet om en aftale.";
-        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
+
+    } else {
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage + ".";
     }
 }
+
 //*******************************************************************************************************************//
 // API post consultation from req to DB//
 //*******************************************************************************************************************//
-async function createAftaleFromReq(){
+async function createAftaleFromReq() {
 
 
     let aftaleReqForm = document.getElementById("aftaleReqForm");
     const formData = new FormData(aftaleReqForm);
     const object = Object.fromEntries(formData);
     console.log(object);
-    object.datetime = object.datetime.substring(0, object.datetime.indexOf("T"))+ "T"+ object.time + ":00Z";
+    object.datetime = object.datetime.substring(0, object.datetime.indexOf("T")) + "T" + object.time + ":00Z";
     object.duration = (Number(object.duration) * 60).toString();
     delete object['time'];
 
@@ -549,26 +651,29 @@ async function createAftaleFromReq(){
         body: JSON.stringify(object),
         headers: {
             "content-type": "application/json",
-            'Authorization' : bearer
+            'Authorization': bearer
         }
     })
 
-    if(res.status === 201) {
+    if (res.status === 201) {
         document.getElementById("succescode").innerHTML = "Du har nu oprettet en aftale fra anmodning.";
-        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
+
+    } else {
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage + ".";
     }
 }
+
 //*******************************************************************************************************************//
 // API post consultation to DB//
 //*******************************************************************************************************************//
-async function createAftale(){
+async function createAftale() {
 
 
     let createAftaleForm = document.getElementById("createAftaleForm");
     const formData = new FormData(createAftaleForm);
     const object = Object.fromEntries(formData);
     console.log(object);
-    object.datetime = object.datetime + "T"+ object.time + ":00Z";
+    object.datetime = object.datetime + "T" + object.time + ":00Z";
     object.duration = (Number(object.duration) * 60).toString();
     delete object['time'];
 
@@ -580,19 +685,22 @@ async function createAftale(){
         body: JSON.stringify(object),
         headers: {
             "content-type": "application/json",
-            'Authorization' : bearer
+            'Authorization': bearer
         }
     })
 
-    if(res.status === 201) {
+    if (res.status === 201) {
         document.getElementById("succescode").innerHTML = "Du har nu oprettet en aftale fra anmodning.";
-        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
+
+    } else {
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage + ".";
     }
 }
+
 //*******************************************************************************************************************//
 // API fetch all request flags//
 //*******************************************************************************************************************//
-async function fetchFlags(){
+async function fetchFlags() {
 
 
     let object = {};
@@ -618,7 +726,9 @@ async function fetchFlags(){
     // https://masteringjs.io/tutorials/fundamentals/foreach-object
 
     const counts = {};
-    flagArray2.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
+    flagArray2.forEach(function (x) {
+        counts[x] = (counts[x] || 0) + 1;
+    });
     console.log("counts: " + counts);
     let reqString = "";
     Object.entries(counts).forEach(entry => {
@@ -636,7 +746,7 @@ async function fetchFlags(){
     btn2.classList.add("button")
     btn2.innerHTML = "Gå til anmodninger";
     btn2.onclick = function () {
-        loadHTML('sitecontent','request.html')
+        loadHTML('sitecontent', 'request.html')
         fetchRequests()
 
     };
@@ -644,39 +754,40 @@ async function fetchFlags(){
 
 
 }
+
 //*******************************************************************************************************************//
 // API fetch all requests for a worker //
 //*******************************************************************************************************************//
-async function fetchRequests(){
+async function fetchRequests() {
 
 
     console.log("Fetching request list..")
     let bearer = "Bearer " + localStorage.getItem("token")
-    const res = await fetch("api/request/list/"+ sessionStorage.getItem("workerusername"), {
+    const res = await fetch("api/request/list/" + sessionStorage.getItem("workerusername"), {
         method: "GET",
         headers: {
-            'Authorization' : bearer,
+            'Authorization': bearer,
         }
     })
     console.log(res)
     const json = await res.text();
     const obj = JSON.parse(json);
     console.log(res.status);
-    if (res.status != 201){
-        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
-    }else{
+    if (res.status != 201) {
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " + obj.errorMessage;
+    } else {
         document.getElementById("requestTable").innerHTML = "";
 
         console.log(obj);
         const obj2 = obj;
         obj2.forEach(o => delete o.workerusername);
-        obj2.forEach(o => o.note = o.note.substring(0,25) + "...");
+        obj2.forEach(o => o.note = o.note.substring(0, 25) + "...");
 
         console.log(obj2);
 
         let myTable = document.querySelector('#requestTable');
 
-        let headers = ['Patient','Ønsket dato', 'Ønsket tidspunkt', 'Årsag til konsultation', 'Gå til'];
+        let headers = ['Patient', 'Ønsket dato', 'Ønsket tidspunkt', 'Årsag til konsultation', 'Gå til'];
 
         let table = document.createElement('table');
         table.classList.add("table1");
@@ -720,26 +831,27 @@ async function fetchRequests(){
 
     }
 }
+
 //*******************************************************************************************************************//
 // API fetch single requests for a worker //
 //*******************************************************************************************************************//
-async function fetchSingleRequest(aftaleID){
+async function fetchSingleRequest(aftaleID) {
 
 
     let bearer = "Bearer " + localStorage.getItem("token")
     const res = await fetch("api/request/" + aftaleID, {
         method: "GET",
         headers: {
-            'Authorization' : bearer,
+            'Authorization': bearer,
         }
     })
     console.log(res)
     const json = await res.text();
     const obj = JSON.parse(json);
     console.log(res.status);
-    if (res.status != 201){
-        document.getElementById("errorfelt3").innerHTML = "Fejlkode :" + obj.errorCode + " " +obj.errorMessage;
-    }else{
+    if (res.status != 201) {
+        document.getElementById("errorfelt3").innerHTML = "Fejlkode: " + obj.errorCode + ". " + obj.errorMessage + ".";
+    } else {
 
         console.log(obj);
         console.log("Hurra!");
@@ -753,14 +865,50 @@ async function fetchSingleRequest(aftaleID){
 
 
     }
+}
+
+function makeGraph(obj) {
+
+    //setup
+    var labels = [...Array(5000).keys()]
+    var labels2 = labels.map(function (x) { return (x * (1/500)).toFixed(2)})
+    const data = {
+        labels: labels2,
+        datasets: [{
+            label: 'EKG Monitor',
+            backgroundColor: [
+                'rgb(0,0,0)',
+            ],
+            borderColor: [
+                'rgb(0,0,0)',
+            ],
+            data: obj,
+            borderWidth: 1,
+
+        }]
+    };
+    //config
+    const conf = {
+        type: 'line',
+        data,
+        options: {
+            elements: {
+                point: {
+                    radius: 0
+                }
+            }
+        }
+    };
+    //render
+    var myChart = new Chart(document.getElementById('ekg_canvas'), conf);
+
 
 }
 
-
-function loadWelcome(){
-    if(sessionStorage.getItem("role") == "?patient?") {
+function loadWelcome() {
+    if (sessionStorage.getItem("role") == "?patient?") {
         loadHTML("sitecontent", "welcome_patient.html");
-    }else{
+    } else {
         loadHTML("sitecontent", "welcome_worker.html");
         fetchFlags();
 
@@ -768,16 +916,29 @@ function loadWelcome(){
 
 }
 
-function loadAftaler(){
-    if(sessionStorage.getItem("role") == "?patient?") {
+function loadAftaler() {
+    if (sessionStorage.getItem("role") == "?patient?") {
         loadHTML("sitecontent", "aftaler_patient.html");
-    }else{
+    } else {
         loadHTML("sitecontent", "aftaler_worker.html");
         fetchFlags();
 
     }
 
 }
+
+function loadLab() {
+    if (sessionStorage.getItem("role") == "?patient?") {
+        loadHTML("sitecontent", "lab.html");
+        fetchEKGList();
+    } else {
+        loadHTML("sitecontent", "lab.html");
+        fetchEKGList();
+
+    }
+
+}
+
 //*******************************************************************************************************************//
 //** https://stackoverflow.com/questions/37096367/how-to-convert-seconds-to-minutes-and-hours-in-javascript **//
 
@@ -790,4 +951,5 @@ function secondsToHms(d) {
     var hDisplay = h > 0 ? h + (h == 1 ? " time, " : " timer, ") : "";
     var mDisplay = m > 0 ? m + (m == 1 ? " minut, " : " minutter, ") : "";
     var sDisplay = s > 0 ? s + (s == 1 ? " sekonder" : " sekonder") : "";
-    return hDisplay + mDisplay + sDisplay;}
+    return hDisplay + mDisplay + sDisplay;
+}

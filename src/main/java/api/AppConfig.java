@@ -22,7 +22,7 @@ public class AppConfig extends Application {
         classes.add(AftaleService.class);
         classes.add(AuthFilter.class);
         classes.add(RequestService.class);
-      //  classes.add(FlagService.class);
+        classes.add(EKGService.class);
 
         //Exception mappers
         classes.add(DataNotFoundExceptionMapper.class);

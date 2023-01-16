@@ -48,7 +48,7 @@ public class LoginController {
         expiry.add(Calendar.MINUTE, 240);
 
         //generate secret key
-        SecretKey key = new generateKey().getKey();
+        SecretKey key = new GenerateKey().getKey();
 
         //Encode key to String for DB
         String secretString = Encoders.BASE64.encode(key.getEncoded());
