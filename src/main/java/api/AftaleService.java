@@ -13,13 +13,12 @@ import model.Role;
 
 @Path("/aftale")
 public class AftaleService {
-
     private static DAOcontroller dc = new DAOcontroller();
 
     @Secured({Role.doctor, Role.patient})
+    @Path("/patient/{cpr}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/patient/{cpr}")
     public Response findAftaleData(@PathParam("cpr") String cpr) {
 
         System.out.println("GET CPR" + cpr);
@@ -44,26 +43,18 @@ public class AftaleService {
         return Response.status(Response.Status.CREATED).build();
     }
     @Secured({Role.doctor, Role.patient})
+    @Path("/{aftaleid}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{aftaleid}")
     public Response findAftale(@PathParam("aftaleid") int aftaleid) {
-
-
             return dc.fetchAftaleDB(aftaleid);
-
-
     }
     @Secured({Role.doctor, Role.patient})
+    @Path("/delete/{aftaleid}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/delete/{aftaleid}")
     public Response deleteAftale(@PathParam("aftaleid") int aftaleid) {
-
-
         return dc.deleteAftaleDB(aftaleid);
-
-
     }
 
     @Secured({Role.doctor})

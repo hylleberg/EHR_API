@@ -15,8 +15,6 @@ import model.Role;
 
 @Path("/ekg")
 public class EKGService {
-    private static LoginController lc = new LoginController();
-
 
     @Path("/post")
     @Secured({Role.doctor})

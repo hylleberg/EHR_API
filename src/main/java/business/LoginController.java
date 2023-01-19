@@ -25,7 +25,6 @@ public class LoginController {
         String res = dc.fetchLoginDataDB(logindata);
 
         if (res.length() > 0) {
-
             System.out.println("Kombination korrekt");
             String token = issueToken(logindata.getUsername(), res);
 

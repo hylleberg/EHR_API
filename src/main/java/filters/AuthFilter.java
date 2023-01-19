@@ -41,10 +41,9 @@ public class AuthFilter implements ContainerRequestFilter {
     ResourceInfo resourceInfo;
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
-        String username = "";
+    public void filter(ContainerRequestContext requestContext) {
 
-        System.out.println("Caught in authFilter!");
+        System.out.println("Authfilter activated!");
         Secured annotation = resourceInfo.getResourceMethod().getAnnotation(Secured.class);
         if (annotation == null) { //No annotation on method level
             annotation = resourceInfo.getResourceClass().getAnnotation(Secured.class);
@@ -83,7 +82,6 @@ public class AuthFilter implements ContainerRequestFilter {
             checkPermissions(methodRoles,returnTouple[1]);
         }
 
-        String test = "haps";
         final SecurityContext securityContext = requestContext.getSecurityContext();
         requestContext.setSecurityContext(new SecurityContext() {
 
@@ -129,13 +127,9 @@ public class AuthFilter implements ContainerRequestFilter {
             String payload = new String(decoder.decode(chunks[1]));
             System.out.println(payload);
 
-            //Workaround, padded payload with "|" in order to extract user/role
+            //Workaround, padded payload.username with "|" and payload.role in order to extract user/role claims
             String[] returnTouple = new String[2];
             returnTouple[0] = payload.split("\\|")[1]; //claimedUser
-
-
-          //  String[] klonks2 = payload.split("\\?");
-          //  String claimedRole = klonks2[1];
             returnTouple[1] = payload.split("\\?")[1]; //role
 
             System.out.println(returnTouple[0]+ " " + returnTouple[1]);
@@ -152,7 +146,7 @@ public class AuthFilter implements ContainerRequestFilter {
                     .parseClaimsJws(token);
 
             System.out.println("Body: " + jwt.getBody());
-            // Return role for role-based auth
+            // Return claimed user + role for role-based auth
             return returnTouple;
 
         } catch (Exception e) {
@@ -186,6 +180,5 @@ public class AuthFilter implements ContainerRequestFilter {
             System.out.println("Forbidden!");
             throw new ForbiddenException("Du har ikke rettigheder til at tilgå denne funktionalitet.");
         }
-
     }
 }

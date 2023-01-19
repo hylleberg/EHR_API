@@ -10,9 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @ApplicationPath("api")
-
 public class AppConfig extends Application {
-
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
 

@@ -896,6 +896,22 @@ function makeGraph(obj) {
                 point: {
                     radius: 0
                 }
+            },
+            scales: {
+                y: {
+                    title:{
+                        display: true,
+                        text: "mV",
+                    }
+
+                },
+                x: {
+                    title:{
+                        display: true,
+                        text: "Sekunder"
+                    }
+
+                }
             }
         }
     };

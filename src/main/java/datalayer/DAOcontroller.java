@@ -22,7 +22,6 @@ public class DAOcontroller {
     private AftaleData aftaledata;
 
     private String cpr;
-
     private RequestData requestdata;
 
     public String getKeyDB(String username) {
