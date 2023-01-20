@@ -7,13 +7,6 @@ import java.sql.SQLException;
 public class SqlConnector {
 
     public static Connection getConnection(){
-
-
-        //mysql-db.caprover.diplomportal.dk
-        //user: s112786
-        //password: 5soljNiFdF05umXE5OwAB
-
-
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://mysql-db.caprover.diplomportal.dk/" + "s112786?user=s112786&password=5soljNiFdF05umXE5OwAB");

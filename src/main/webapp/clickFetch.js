@@ -929,7 +929,6 @@ function loadWelcome() {
         fetchFlags();
 
     }
-
 }
 
 function loadAftaler() {

@@ -20,6 +20,4 @@ function loadHTML(id,filename){
         xhttp.send();
     }
 
-
-
 }
